@@ -49,6 +49,7 @@
         <module>bagit-package-provider</module>
         <module>provider-integration</module>
         <module>dash-package-provider</module>
+        <module>shared-dspace-provider</module>
     </modules>
 
     <profiles>
