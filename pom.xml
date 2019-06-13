@@ -48,6 +48,7 @@
         <module>nihms-package-provider</module>
         <module>bagit-package-provider</module>
         <module>provider-integration</module>
+        <module>dash-package-provider</module>
     </modules>
 
     <profiles>
