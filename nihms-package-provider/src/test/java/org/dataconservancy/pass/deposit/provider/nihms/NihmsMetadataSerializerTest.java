@@ -23,6 +23,7 @@ import org.dataconservancy.pass.deposit.model.JournalPublicationType;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -279,6 +280,40 @@ public class NihmsMetadataSerializerTest {
         underTest = new NihmsMetadataSerializer(metadata);
 
         assertFalse(IOUtils.toString(underTest.serialize().getInputStream(), UTF_8).contains("issn"));
+    }
+
+    /**
+     * If the User is missing a first name or last name, it should be parsed from the full name instead.  The middle
+     * name is excluded if it is present in the full name.  Parsing is not exact, but will prevent NPEs and provide
+     * a non-null value in the metadata, which is necessary for the package to pass validaton.
+     */
+    @Test
+    public void missingUserFirstNameAndLastName() throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+
+        // Override the first and last name of the Person with null, and then set the full name to expected values
+        DepositMetadata.Person submitter =
+                metadata.getPersons()
+                        .stream()
+                        .filter(p -> p.getType() == DepositMetadata.PERSON_TYPE.submitter)
+                        .findAny()
+                        .orElseThrow(() -> new RuntimeException("Missing Submitter for submission."));
+
+        String expectedFirstName = "MooFirstName";
+        String expectedLastName = "CowLastName";
+        submitter.setFullName(String.format("%s %s %s", expectedFirstName, "SpotsMiddleName", expectedLastName));
+        submitter.setFirstName(null);
+        submitter.setLastName(null);
+
+        Element doc = builder.parse(underTest.serialize().getInputStream()).getDocumentElement();
+
+        Node foundPerson = asStream(doc.getElementsByTagName("person"))
+                .filter(node -> node.getAttributes().getNamedItem("email").getTextContent().equals(submitter.email))
+                .findAny()
+                .orElseThrow(() -> new RuntimeException("Missing submitter person in serialized metadata"));
+
+        assertEquals(expectedFirstName, foundPerson.getAttributes().getNamedItem("fname").getTextContent());
+        assertEquals(expectedLastName, foundPerson.getAttributes().getNamedItem("lname").getTextContent());
     }
 
     private static Stream<Node> asStream(NodeList nodeList) {

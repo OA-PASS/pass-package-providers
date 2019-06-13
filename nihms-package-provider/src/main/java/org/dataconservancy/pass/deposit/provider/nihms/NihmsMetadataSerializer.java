@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -158,12 +159,26 @@ public class NihmsMetadataSerializer implements StreamingSerializer {
                         writer.startNode("person");
                         if (person.getFirstName() != null) {
                             writer.addAttribute("fname", person.getFirstName());
+                        } else {
+                            if (person.getFullName() != null) {
+                                writer.addAttribute("fname", person.getFullName().split("\\s")[0]);
+                            }
                         }
                         if (person.getMiddleName() != null) {
                             writer.addAttribute("mname", person.getMiddleName());
                         }
                         if (person.getLastName() != null) {
                             writer.addAttribute("lname", person.getLastName());
+                        } else {
+                            if (person.getFullName() != null) {
+                                String[] split = person.getFullName().split("\\s");
+                                if (split.length > 2) {
+                                    // middle name is present
+                                    writer.addAttribute("lname", String.join(" ", Arrays.copyOfRange(split, 2, split.length)));
+                                } else {
+                                    writer.addAttribute("lname", split[1]);
+                                }
+                            }
                         }
                         if (person.getEmail() != null) {
                             writer.addAttribute("email", person.getEmail());
