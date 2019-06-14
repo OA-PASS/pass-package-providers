@@ -25,11 +25,11 @@ import org.w3c.dom.Element;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.net.URI;
 
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCTERMS_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_BIBLIOCITATION;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_CONTRIBUTOR;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_PUBLISHER;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCTERMS_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCT_BIBLIOCITATION;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_CONTRIBUTOR;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_PUBLISHER;
 import static java.util.Collections.emptyMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -42,7 +42,7 @@ import static submissions.SubmissionResourceUtil.lookupStream;
  */
 public class MetadataTest {
 
-    private DspaceMetadataDomWriter domWriter;
+    private J10PMetadataDomWriter domWriter;
     private FilesystemModelBuilder modelBuilder;
 
     private static final URI SUBMISSION_RESOURCE_1 = URI.create("fake:submission13");
@@ -52,7 +52,7 @@ public class MetadataTest {
     public void setup() {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
-        domWriter = new DspaceMetadataDomWriter(dbf);
+        domWriter = new J10PMetadataDomWriter(dbf);
         modelBuilder = new FilesystemModelBuilder();
     }
 

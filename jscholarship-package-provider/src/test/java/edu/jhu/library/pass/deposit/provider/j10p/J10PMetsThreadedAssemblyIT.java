@@ -15,7 +15,9 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import au.edu.apsr.mtk.ch.METSReader;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsAssembler;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageVerifier;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions.Archive;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions.Compression;
@@ -23,7 +25,6 @@ import org.dataconservancy.pass.deposit.assembler.PackageOptions.Spec;
 import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
 import org.dataconservancy.pass.deposit.assembler.shared.PackageVerifier;
 import org.dataconservancy.pass.deposit.assembler.shared.ThreadedAssemblyIT;
-import org.junit.Before;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.HashMap;
@@ -34,14 +35,14 @@ import static java.util.Collections.singletonList;
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
-public class DspaceMetsThreadedAssemblyIT extends ThreadedAssemblyIT {
+public class J10PMetsThreadedAssemblyIT extends ThreadedAssemblyIT {
 
     @Override
     protected AbstractAssembler assemblerUnderTest() {
-        DspaceMetadataDomWriterFactory metsWriterFactory =
-                new DspaceMetadataDomWriterFactory(DocumentBuilderFactory.newInstance());
+        J10PMetadataDomWriterFactory metsWriterFactory =
+                new J10PMetadataDomWriterFactory(DocumentBuilderFactory.newInstance());
         DspaceMetsPackageProviderFactory ppf = new DspaceMetsPackageProviderFactory(metsWriterFactory);
-        return new DspaceMetsAssembler(mbf, rbf, ppf);
+        return new J10PDspaceMetsAssembler(mbf, rbf, ppf);
     }
 
     @Override

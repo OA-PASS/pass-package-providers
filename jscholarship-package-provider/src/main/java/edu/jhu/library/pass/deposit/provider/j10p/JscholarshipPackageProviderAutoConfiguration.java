@@ -18,11 +18,12 @@
 
 package edu.jhu.library.pass.deposit.provider.j10p;
 
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan
+@ComponentScan(basePackageClasses = {J10PAutoConfiguration.class, DspaceAutoConfiguration.class})
 public class JscholarshipPackageProviderAutoConfiguration {
 
 }

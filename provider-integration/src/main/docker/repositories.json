@@ -12,7 +12,7 @@
     },
     "assembler": {
       "specification": "http://purl.org/net/sword/package/METSDSpaceSIP",
-      "beanName": "dspaceMetsAssembler",
+      "beanName": "j10PDspaceMetsAssembler",
       "options": {
         "archive": "ZIP",
         "compression": "NONE",

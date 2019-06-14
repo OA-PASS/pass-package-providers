@@ -377,6 +377,14 @@
         </dependency>
 
         <dependency>
+            <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+            <artifactId>shared-dspace-provider</artifactId>
+            <version>${project.parent.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.dataconservancy.pass.deposit</groupId>
             <artifactId>shared-resources</artifactId>
             <version>${deposit-services.version}</version>

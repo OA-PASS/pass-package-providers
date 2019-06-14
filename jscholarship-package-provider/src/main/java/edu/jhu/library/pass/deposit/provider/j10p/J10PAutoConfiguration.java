@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Johns Hopkins University
+ * Copyright 2019 Johns Hopkins University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,12 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-
 /**
+ * Marker interface for Spring Boot @Component scanning.  This package will be scanned recursively by Spring Boot
+ * for annotated classes.
+ *
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
-@Component
-public class DspaceMetadataDomWriterFactory {
+public interface J10PAutoConfiguration {
 
-    private DocumentBuilderFactory dbf;
-
-    @Autowired
-    public DspaceMetadataDomWriterFactory(DocumentBuilderFactory dbf) {
-        this.dbf = dbf;
-    }
-
-    public DspaceMetadataDomWriter newInstance() {
-        return new DspaceMetadataDomWriter(dbf);
-    }
 }

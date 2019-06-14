@@ -13,52 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.jhu.library.pass.deposit.provider.j10p;
+package edu.jhu.library.pass.deposit.provider.shared.dspace;
 
 import org.dataconservancy.pass.deposit.DepositTestUtil;
 import org.dataconservancy.pass.deposit.assembler.Assembler;
 import org.dataconservancy.pass.deposit.assembler.PackageStream;
 import org.dataconservancy.pass.deposit.builder.fs.FilesystemModelBuilder;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import resources.SharedSubmissionUtil;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.net.URI;
 
-import static edu.jhu.library.pass.deposit.provider.j10p.DspaceDepositTestUtil.getMetsXml;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceDepositTestUtil.getMetsXml;
 import static org.dataconservancy.pass.deposit.DepositTestUtil.packageFile;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
-public class MultipleAssemblyDspaceMetsAssemblerIT extends BaseDspaceMetsAssemblerIT {
+public abstract class MultipleAssemblyDspaceMetsAssemblerIT extends BaseDspaceMetsAssemblerIT {
 
     /**
      * Re-use the same assembler instance across tests.  This is to demonstrate that the collaborating objects,
      * including the DspaceMetsDomWriter, do not maintain state across invocations of {@link
      * Assembler#assemble(DepositSubmission, java.util.Map)}
      */
-    private static DspaceMetsAssembler underTest;
+    protected static DspaceMetsAssembler underTest;
 
     @Override
     public void setUp() throws Exception {
         builder = new FilesystemModelBuilder();
-    }
 
-    /**
-     * Creates an instance of DsspaceMetsAssembler that is shared across test method invocations.
-     * See {@link #assemblePackage(URI)}.
-     */
-    @BeforeClass
-    public static void initAssembler() {
-        DspaceMetadataDomWriterFactory metsWriterFactory = new DspaceMetadataDomWriterFactory(
-                DocumentBuilderFactory.newInstance());
-        DspaceMetsPackageProviderFactory packageProviderFactory = new DspaceMetsPackageProviderFactory(
-                metsWriterFactory);
-        underTest = new DspaceMetsAssembler(metadataBuilderFactory(), resourceBuilderFactory(), packageProviderFactory);
+        assertNotNull("Subclasses must set the static field " + this.getClass().getSimpleName() + ".underTest " +
+                "with an instance of the DspaceMetsAssembler being tested.", underTest);
     }
 
     /**

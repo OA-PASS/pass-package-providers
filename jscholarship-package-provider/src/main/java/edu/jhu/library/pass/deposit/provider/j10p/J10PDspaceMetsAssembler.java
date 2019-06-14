@@ -15,24 +15,22 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsAssembler;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
+import org.dataconservancy.pass.deposit.assembler.shared.MetadataBuilderFactory;
+import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderFactory;
 import org.springframework.stereotype.Component;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
 @Component
-class DspaceMetsPackageProviderFactory {
+public class J10PDspaceMetsAssembler extends DspaceMetsAssembler {
 
-    private DspaceMetadataDomWriterFactory domWriterFactory;
-
-    @Autowired
-    public DspaceMetsPackageProviderFactory(DspaceMetadataDomWriterFactory domWriterFactory) {
-        this.domWriterFactory = domWriterFactory;
-    }
-
-    DspaceMetsPackageProvider newInstance() {
-        return new DspaceMetsPackageProvider(domWriterFactory);
+    public J10PDspaceMetsAssembler(MetadataBuilderFactory mbf,
+                                   ResourceBuilderFactory rbf,
+                                   DspaceMetsPackageProviderFactory packageProviderFactory) {
+        super(mbf, rbf, packageProviderFactory);
     }
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package edu.jhu.library.pass.deposit.provider.j10p;
+package edu.jhu.library.pass.deposit.provider.shared.dspace;
 
 import org.dataconservancy.pass.deposit.assembler.PackageStream.Resource;
 import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
@@ -39,7 +39,7 @@ import java.util.Map;
  */
 public class DspaceMetsPackageProvider implements PackageProvider {
 
-    static final String METS_XML = "mets.xml";
+    public static final String METS_XML = "mets.xml";
 
     private static final Logger LOG = LoggerFactory.getLogger(DspaceMetsPackageProvider.class);
 

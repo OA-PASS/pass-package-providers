@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Johns Hopkins University
+ * Copyright 2019 Johns Hopkins University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,22 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package edu.jhu.library.pass.deposit.provider.shared.dspace;
 
-package edu.jhu.library.pass.deposit.provider.j10p;
+/**
+ * @author Elliot Metsger (emetsger@jhu.edu)
+ */
+public interface DspaceMetadataDomWriterFactory {
 
-import org.junit.Rule;
-import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-public class DspaceMetadataDomWriterIT {
-
-    @Rule
-    public TemporaryFolder tempFolder = new TemporaryFolder();
-
-    private static final Logger LOG = LoggerFactory.getLogger(DspaceMetadataDomWriterIT.class);
-
-
-
+    DspaceMetadataDomWriter newInstance();
 
 }

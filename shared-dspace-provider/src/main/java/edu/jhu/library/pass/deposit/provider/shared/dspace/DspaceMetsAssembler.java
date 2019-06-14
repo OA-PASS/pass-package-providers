@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Johns Hopkins University
+ * Copyright 2019 Johns Hopkins University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package edu.jhu.library.pass.deposit.provider.j10p;
+package edu.jhu.library.pass.deposit.provider.shared.dspace;
 
 import org.dataconservancy.pass.deposit.assembler.MetadataBuilder;
 import org.dataconservancy.pass.deposit.assembler.PackageStream;
@@ -25,15 +25,13 @@ import org.dataconservancy.pass.deposit.assembler.shared.MetadataBuilderFactory;
 import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderFactory;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
 
 import static org.dataconservancy.pass.deposit.assembler.shared.AssemblerSupport.buildMetadata;
 
-@Component
-public class DspaceMetsAssembler extends AbstractAssembler {
+public abstract class DspaceMetsAssembler extends AbstractAssembler {
 
     // TODO: find a better place for these constants.
 

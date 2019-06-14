@@ -31,6 +31,8 @@ import au.edu.apsr.mtk.base.MdSec;
 import au.edu.apsr.mtk.base.MdWrap;
 import au.edu.apsr.mtk.base.SourceMD;
 import au.edu.apsr.mtk.base.StructMap;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetadataDomWriter;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants;
 import org.dataconservancy.pass.deposit.assembler.PackageStream;
 import org.dataconservancy.pass.deposit.model.DepositMetadata;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
@@ -51,38 +53,38 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static edu.jhu.library.pass.deposit.provider.j10p.MetsMdType.DC;
-import static edu.jhu.library.pass.deposit.provider.j10p.MetsMdType.OTHER;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCTERMS_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_ABSTRACT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_BIBLIOCITATION;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_HASVERSION;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_CONTRIBUTOR;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_DESCRIPTION;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_PUBLISHER;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_TITLE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_DESCRIPTION;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_ELEMENT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_EMBARGO;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_EMBARGO_LIFT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_EMBARGO_TERMS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_FIELD;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_MDSCHEMA;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_MDSCHEMA_DC;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_MDSCHEMA_LOCAL;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_PROVENANCE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_QUALIFIER;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.NS_TO_PREFIX_MAP;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XSI_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XSI_NS_PREFIX;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.MetsMdType.DC;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.MetsMdType.OTHER;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCTERMS_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCT_ABSTRACT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCT_BIBLIOCITATION;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCT_HASVERSION;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_CONTRIBUTOR;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_DESCRIPTION;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_PUBLISHER;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_TITLE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_DESCRIPTION;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_ELEMENT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_EMBARGO;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_EMBARGO_LIFT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_EMBARGO_TERMS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_FIELD;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_MDSCHEMA;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_MDSCHEMA_DC;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_MDSCHEMA_LOCAL;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_PROVENANCE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_QUALIFIER;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.NS_TO_PREFIX_MAP;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XSI_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XSI_NS_PREFIX;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
-public class DspaceMetadataDomWriter {
+public class J10PMetadataDomWriter implements DspaceMetadataDomWriter {
 
     static final String METS_ID = "DSPACE-METS-SWORD";
 
@@ -107,7 +109,7 @@ public class DspaceMetadataDomWriter {
 
     private int authorIndex;
 
-    DspaceMetadataDomWriter(DocumentBuilderFactory dbf) {
+    J10PMetadataDomWriter(DocumentBuilderFactory dbf) {
         try {
             this.dbf = dbf;
             this.metsDocument = dbf.newDocumentBuilder().newDocument();
@@ -122,7 +124,7 @@ public class DspaceMetadataDomWriter {
         }
     }
 
-    void write(OutputStream out) {
+    public void write(OutputStream out) {
         METSWrapper wrapper = null;
         try {
             wrapper = new METSWrapper(metsDocument);
@@ -132,7 +134,7 @@ public class DspaceMetadataDomWriter {
         wrapper.write(out);
     }
 
-    void addSubmission(DepositSubmission submission) {
+    public J10PMetadataDomWriter addSubmission(DepositSubmission submission) {
         try {
             if (getFileGrpByUse(CONTENT_USE) == null || getFileGrpByUse(CONTENT_USE).getFiles().isEmpty()) {
                 throw new IllegalStateException("No <fileGrp USE=\"" + CONTENT_USE + "\"> element was found, or was" +
@@ -147,6 +149,8 @@ public class DspaceMetadataDomWriter {
         } catch (METSException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
+
+        return this;
     }
 
     StructMap mapStructMap(DepositSubmission submission, Collection<DmdSec> dmdSec, FileSec fileSec) {
@@ -497,7 +501,7 @@ public class DspaceMetadataDomWriter {
      *
      * @param resource the package resource to be represented in the DOM
      */
-    void addResource(PackageStream.Resource resource) {
+    public J10PMetadataDomWriter addResource(PackageStream.Resource resource) {
         File resourceFile = null;
         try {
             resourceFile = createFile(CONTENT_USE);
@@ -528,6 +532,8 @@ public class DspaceMetadataDomWriter {
         locat.setID(mintId());
         locat.setHref(resource.name());
         locat.setLocType(LOCTYPE_URL);
+
+        return this;
     }
 
     /**

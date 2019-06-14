@@ -17,9 +17,8 @@ package edu.jhu.library.pass.deposit.provider.integration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.jhu.library.pass.deposit.provider.bagit.BagItPackageProvider;
 import edu.jhu.library.pass.deposit.provider.bagit.BagItPackageVerifier;
-import edu.jhu.library.pass.deposit.provider.j10p.DspaceMetsPackageVerifier;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageVerifier;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions;
 import org.dataconservancy.pass.deposit.assembler.shared.ExplodedPackage;
 import org.dataconservancy.pass.deposit.assembler.shared.PackageVerifier;
@@ -28,14 +27,11 @@ import org.dataconservancy.pass.deposit.model.DepositSubmission;
 import org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageVerifier;
 import org.dataconservancy.pass.model.Repository;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 

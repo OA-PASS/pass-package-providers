@@ -121,6 +121,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+            <artifactId>shared-provider</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.dataconservancy.pass.deposit</groupId>
             <artifactId>shared-resources</artifactId>
             <version>${deposit-services.version}</version>

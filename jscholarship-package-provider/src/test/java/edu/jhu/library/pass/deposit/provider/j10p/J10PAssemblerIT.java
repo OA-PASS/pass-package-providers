@@ -15,6 +15,9 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
+import edu.jhu.library.pass.deposit.provider.shared.dspace.BaseDspaceMetsAssemblerIT;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsAssembler;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.DigestObserver;
 import org.apache.commons.io.input.ObservableInputStream;
@@ -26,6 +29,7 @@ import org.dataconservancy.pass.deposit.model.DepositFile;
 import org.junit.Test;
 import org.w3c.dom.Element;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,14 +38,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_CHECKSUM;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_CHECKSUM_TYPE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FILE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_MIMETYPE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_SIZE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XLINK_HREF;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XLINK_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_CHECKSUM;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_CHECKSUM_TYPE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_FILE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_MIMETYPE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_SIZE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XLINK_HREF;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XLINK_NS;
 import static org.dataconservancy.pass.deposit.DepositTestUtil.asList;
 import static org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler.sanitizeFilename;
 import static org.junit.Assert.assertEquals;
@@ -55,7 +59,16 @@ import static org.mockito.Mockito.when;
  *
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
-public class DspaceMetsAssemblerIT extends BaseDspaceMetsAssemblerIT {
+public class J10PAssemblerIT extends BaseDspaceMetsAssemblerIT {
+
+    @Override
+    protected DspaceMetsAssembler assemblerUnderTest() {
+        J10PMetadataDomWriterFactory domWriterFactory =
+                new J10PMetadataDomWriterFactory(DocumentBuilderFactory.newInstance());
+        DspaceMetsPackageProviderFactory packageProviderFactory =
+                new DspaceMetsPackageProviderFactory(domWriterFactory);
+        return new J10PDspaceMetsAssembler(mbf, rbf, packageProviderFactory);
+    }
 
     /**
      * Insures the locations of the files in the package are as expected, and that the mets.xml is present and correctly

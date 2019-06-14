@@ -25,9 +25,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>dash-package-provider</artifactId>
-    <name>Harvard DASH (DSpace METS Profile) Package Provider</name>
-    <description>Creates packages according to the DSpace METS SIP Profile and Harvard metadata conventions</description>
+    <artifactId>shared-provider</artifactId>
+    <name>Common Package Provider Code</name>
+    <description>Shared implementation for all package providers</description>
 
     <build>
 
@@ -118,12 +118,6 @@
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
-            <artifactId>shared-dspace-provider</artifactId>
-            <version>${project.parent.version}</version>
         </dependency>
 
         <dependency>

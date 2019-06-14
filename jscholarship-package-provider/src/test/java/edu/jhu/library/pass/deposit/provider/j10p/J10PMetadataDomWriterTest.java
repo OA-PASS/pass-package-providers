@@ -20,6 +20,7 @@ import au.edu.apsr.mtk.base.DmdSec;
 import au.edu.apsr.mtk.base.File;
 import au.edu.apsr.mtk.base.FileGrp;
 import au.edu.apsr.mtk.base.FileSec;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants;
 import org.apache.tika.io.IOUtils;
 import org.dataconservancy.pass.deposit.DepositTestUtil;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
@@ -57,51 +58,52 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCTERMS_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_ABSTRACT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_BIBLIOCITATION;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_CONTRIBUTOR;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_TITLE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_DESCRIPTION;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_ELEMENT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_EMBARGO;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_EMBARGO_LIFT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_EMBARGO_TERMS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_FIELD;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_MDSCHEMA;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_MDSCHEMA_DC;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_MDSCHEMA_LOCAL;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_PROVENANCE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_QUALIFIER;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_CHECKSUM;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_CHECKSUM_TYPE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_CONTENT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_DIV;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_DMDID;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_DMDSEC;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FILE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FILEGRP;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FILEID;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FILESEC;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FLOCAT;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FPTR;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_GROUPID;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_ID;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_LOCTYPE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_LOCTYPE_URL;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_MDTYPE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_MDTYPE_DC;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_MIMETYPE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_NS;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_SIZE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_STRUCTMAP;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_USE;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_XMLDATA;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XLINK_HREF;
-import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XLINK_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceDepositTestUtil.writeAndParseResults;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCTERMS_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCT_ABSTRACT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCT_BIBLIOCITATION;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_CONTRIBUTOR;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DC_TITLE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_DESCRIPTION;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_ELEMENT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_EMBARGO;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_EMBARGO_LIFT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_EMBARGO_TERMS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_FIELD;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_MDSCHEMA;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_MDSCHEMA_DC;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_MDSCHEMA_LOCAL;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_PROVENANCE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_QUALIFIER;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_CHECKSUM;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_CHECKSUM_TYPE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_CONTENT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_DIV;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_DMDID;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_DMDSEC;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_FILE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_FILEGRP;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_FILEID;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_FILESEC;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_FLOCAT;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_FPTR;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_GROUPID;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_ID;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_LOCTYPE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_LOCTYPE_URL;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_MDTYPE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_MDTYPE_DC;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_MIMETYPE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_NS;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_SIZE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_STRUCTMAP;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_USE;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.METS_XMLDATA;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XLINK_HREF;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XLINK_NS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -112,9 +114,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * Unit tests most of the nuances of the {@link DspaceMetadataDomWriter}.
+ * Unit tests most of the nuances of the {@link J10PMetadataDomWriter}.
  */
-public class DspaceMetadataDomWriterTest {
+public class J10PMetadataDomWriterTest {
 
     @Rule
     public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -122,7 +124,7 @@ public class DspaceMetadataDomWriterTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
-    private static final Logger LOG = LoggerFactory.getLogger(DspaceMetadataDomWriterTest.class);
+    private static final Logger LOG = LoggerFactory.getLogger(J10PMetadataDomWriterTest.class);
 
     private List<Resource> custodialContent = Arrays.asList(
             new ClassPathResource(this.getClass().getPackage().getName().replace(".", "/") + "/manuscript.txt"),
@@ -130,12 +132,12 @@ public class DspaceMetadataDomWriterTest {
 
     private DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
-    private DspaceMetadataDomWriter underTest;
+    private J10PMetadataDomWriter underTest;
 
     @Before
     public void setUp() throws Exception {
         dbf.setNamespaceAware(true);
-        underTest = new DspaceMetadataDomWriter(dbf);
+        underTest = new J10PMetadataDomWriter(dbf);
     }
 
     /**
@@ -175,7 +177,7 @@ public class DspaceMetadataDomWriterTest {
      */
     @Test
     public void writeSampleMets() throws Exception {
-        DspaceMetadataDomWriter underTest = new DspaceMetadataDomWriter(DocumentBuilderFactory.newInstance());
+        J10PMetadataDomWriter underTest = new J10PMetadataDomWriter(DocumentBuilderFactory.newInstance());
 
         PackageStream.Resource r = mock(PackageStream.Resource.class);
         when(r.checksums()).thenReturn(Collections.singletonList(new ChecksumImpl(Checksum.OPTS.MD5, new byte[128], "base64", "hex")));
@@ -306,8 +308,8 @@ public class DspaceMetadataDomWriterTest {
         underTest.addResource(resource);
 
         // Writing out and re-parsing allows the test to be somewhat independent of parsing model used by
-        // the DspaceMetadataDomWriter
-        Document result = DspaceDepositTestUtil.writeAndParseResults(dbf, underTest);
+        // the J10PMetadataDomWriter
+        Document result = writeAndParseResults(dbf, underTest);
 
         assertEquals(1, result.getDocumentElement().getElementsByTagNameNS(METS_NS, METS_FILESEC).getLength());
         Element fileSec = (Element) result.getDocumentElement().getElementsByTagNameNS(METS_NS, METS_FILESEC).item(0);
@@ -373,7 +375,7 @@ public class DspaceMetadataDomWriterTest {
         underTest.addResource(resource3);
         underTest.addResource(resource4);
 
-        Document result = DspaceDepositTestUtil.writeAndParseResults(dbf, underTest);
+        Document result = writeAndParseResults(dbf, underTest);
 
         assertEquals(5, result.getElementsByTagNameNS(METS_NS, METS_FILE).getLength());
         Element file1 = (Element) result.getDocumentElement().getElementsByTagNameNS(METS_NS, METS_FILE).item(0);
@@ -413,7 +415,7 @@ public class DspaceMetadataDomWriterTest {
 
         verify(resource, atLeastOnce()).checksum();
 
-        Document result = DspaceDepositTestUtil.writeAndParseResults(dbf, underTest);
+        Document result = writeAndParseResults(dbf, underTest);
 
         Element file1 = (Element) result.getDocumentElement().getElementsByTagNameNS(METS_NS, METS_FILE).item(0);
         assertEquals(checksumShaVal, file1.getAttribute(METS_CHECKSUM));
@@ -460,7 +462,7 @@ public class DspaceMetadataDomWriterTest {
 
         underTest.mapDmdSec(submission);
 
-        Document result = DspaceDepositTestUtil.writeAndParseResults(dbf, underTest);
+        Document result = writeAndParseResults(dbf, underTest);
 
         Element dmdSec = (Element) result.getDocumentElement().getFirstChild();
         assertNotNull(dmdSec);
@@ -563,7 +565,7 @@ public class DspaceMetadataDomWriterTest {
 
         underTest.mapDmdSec(submission);
 
-        Document result = DspaceDepositTestUtil.writeAndParseResults(dbf, underTest);
+        Document result = writeAndParseResults(dbf, underTest);
         NodeList dmdSecList = result.getElementsByTagNameNS(METS_NS, METS_DMDSEC);
         List<String> dmdSecGroupIds = new ArrayList<>();
         Element dim = null;
@@ -632,7 +634,7 @@ public class DspaceMetadataDomWriterTest {
         when(dmdSec2.getID()).thenReturn(dmdId2);
         FileSec fileSec = mock(FileSec.class);
         FileGrp fileGrp = mock(FileGrp.class);
-        when(fileSec.getFileGrpByUse(DspaceMetadataDomWriter.CONTENT_USE)).thenReturn(Collections.singletonList
+        when(fileSec.getFileGrpByUse(J10PMetadataDomWriter.CONTENT_USE)).thenReturn(Collections.singletonList
                 (fileGrp));
 
         String fileId1 = UUID.randomUUID().toString();
@@ -649,7 +651,7 @@ public class DspaceMetadataDomWriterTest {
 
         underTest.mapStructMap(submission, Arrays.asList(dmdSec1, dmdSec2), fileSec);
 
-        Document result = DspaceDepositTestUtil.writeAndParseResults(dbf, underTest);
+        Document result = writeAndParseResults(dbf, underTest);
 
         List<Element> structMaps = DepositTestUtil.asList(result.getElementsByTagNameNS(METS_NS, METS_STRUCTMAP));
         assertEquals(1, structMaps.size());

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Johns Hopkins University
+ * Copyright 2019 Johns Hopkins University
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package edu.jhu.library.pass.deposit.provider.shared;
 
-package edu.jhu.library.pass.deposit.provider.j10p;
+import org.dataconservancy.pass.deposit.assembler.shared.PackageProvider;
 
-public class DspaceMetsAssemblerTest {
+/**
+ * Answers a configured PackageProvider.
+ *
+ * @author Elliot Metsger (emetsger@jhu.edu)
+ */
+public interface PackageProviderFactory {
+
+    /**
+     * Answers a configured {@link PackageProvider} ready to produce a package.
+     *
+     * @return a configured {@code PackageProvider}
+     */
+    PackageProvider newInstance();
 
 }

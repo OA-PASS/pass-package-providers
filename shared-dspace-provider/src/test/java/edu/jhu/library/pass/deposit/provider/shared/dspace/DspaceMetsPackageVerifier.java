@@ -1,19 +1,21 @@
 /*
- * Copyright 2019 Johns Hopkins University
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright 2019 Johns Hopkins University
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
-package edu.jhu.library.pass.deposit.provider.j10p;
+package edu.jhu.library.pass.deposit.provider.shared.dspace;
 
 import au.edu.apsr.mtk.base.METS;
 import au.edu.apsr.mtk.base.METSException;
@@ -37,7 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static edu.jhu.library.pass.deposit.provider.j10p.DspaceMetsPackageProvider.METS_XML;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProvider.METS_XML;
 import static org.apache.commons.io.filefilter.FileFilterUtils.nameFileFilter;
 import static org.apache.commons.io.filefilter.FileFilterUtils.notFileFilter;
 import static org.dataconservancy.pass.deposit.assembler.PackageOptions.*;

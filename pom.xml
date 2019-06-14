@@ -50,6 +50,7 @@
         <module>provider-integration</module>
         <module>dash-package-provider</module>
         <module>shared-dspace-provider</module>
+        <module>shared-provider</module>
     </modules>
 
     <profiles>
