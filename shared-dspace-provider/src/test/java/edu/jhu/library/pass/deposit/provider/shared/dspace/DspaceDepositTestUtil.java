@@ -56,7 +56,7 @@ public class DspaceDepositTestUtil {
             throws SAXException, IOException, ParserConfigurationException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         underTest.write(out);
-        System.err.println(">>> Wrote: \n" + out.toString("UTF-8"));
+//        System.err.println(">>> Wrote: \n" + out.toString("UTF-8"));
         Document result = dbf.newDocumentBuilder().parse(new ByteArrayInputStream(out.toByteArray()));
         assertTrue(result.getChildNodes().getLength() > 0);
         return result;
