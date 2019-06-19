@@ -93,6 +93,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.dataconservancy.pass</groupId>
+            <artifactId>pass-client-api</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.dataconservancy.pass.deposit</groupId>
             <artifactId>shared-assembler</artifactId>
             <version>${deposit-services.version}</version>

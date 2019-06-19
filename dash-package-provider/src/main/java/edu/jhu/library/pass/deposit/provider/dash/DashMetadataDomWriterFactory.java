@@ -17,15 +17,31 @@ package edu.jhu.library.pass.deposit.provider.dash;
 
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetadataDomWriter;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetadataDomWriterFactory;
+import org.dataconservancy.pass.client.PassClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
+@Component
 public class DashMetadataDomWriterFactory implements DspaceMetadataDomWriterFactory {
+
+    private DocumentBuilderFactory dbf;
+
+    private PassClient passClient;
+
+    @Autowired
+    public DashMetadataDomWriterFactory(DocumentBuilderFactory dbf, PassClient passClient) {
+        this.dbf = dbf;
+        this.passClient = passClient;
+    }
 
     @Override
     public DspaceMetadataDomWriter newInstance() {
-        return null;
+        return new DashMetadataDomWriter(dbf, passClient);
     }
 
 }

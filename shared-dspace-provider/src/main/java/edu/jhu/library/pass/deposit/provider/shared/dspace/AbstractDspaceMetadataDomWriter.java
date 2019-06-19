@@ -80,7 +80,7 @@ public abstract class AbstractDspaceMetadataDomWriter implements DspaceMetadataD
         }
     }
 
-    protected StructMap mapStructMap(DepositSubmission submission, Collection<DmdSec> dmdSec, FileSec fileSec) {
+    public StructMap mapStructMap(DepositSubmission submission, Collection<DmdSec> dmdSec, FileSec fileSec) {
         StructMap structMap = null;
         try {
             structMap = this.mets.newStructMap();

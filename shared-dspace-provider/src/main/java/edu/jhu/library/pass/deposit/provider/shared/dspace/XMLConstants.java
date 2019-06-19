@@ -82,11 +82,15 @@ public class XMLConstants {
 
     public static final String DC_CONTRIBUTOR = "contributor";
 
+    public static final String DC_CONTRIBUTOR_AUTHOR = "author";
+
     public static final String DC_COVERAGE = "coverage";
 
     public static final String DC_CREATOR = "creator";
 
     public static final String DC_DATE = "date";
+
+    public static final String DC_DATE_ISSUED = "issued";
 
     public static final String DC_FORMAT = "format";
 
@@ -95,6 +99,10 @@ public class XMLConstants {
     public static final String DC_RELATION = "relation";
 
     public static final String DC_SOURCE = "source";
+
+    public static final String DC_SOURCE_JOURNAL = "journal";
+
+    public static final String DC_SOURCE_VOLUME = "volume";
 
     public static final String DC_TYPE = "type";
 
@@ -105,6 +113,10 @@ public class XMLConstants {
     public static final String DC_ABSTRACT = "abstract";
 
     public static final String DC_IDENTIFIER = "identifier";
+
+    public static final String DC_IDENTIFIER_ISSN = "issn";
+
+    public static final String DC_IDENTIFIER_DOI = "doi";
 
     public static final String DC_SUBJECT = "subject";
 
