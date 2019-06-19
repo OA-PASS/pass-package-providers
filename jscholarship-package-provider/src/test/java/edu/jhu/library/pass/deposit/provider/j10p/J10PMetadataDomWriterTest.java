@@ -20,6 +20,7 @@ import au.edu.apsr.mtk.base.DmdSec;
 import au.edu.apsr.mtk.base.File;
 import au.edu.apsr.mtk.base.FileGrp;
 import au.edu.apsr.mtk.base.FileSec;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.DomWriterUtil;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants;
 import org.apache.tika.io.IOUtils;
 import org.dataconservancy.pass.deposit.DepositTestUtil;
@@ -258,7 +259,7 @@ public class J10PMetadataDomWriterTest {
         String ns = XMLConstants.NS_TO_PREFIX_MAP.entrySet().iterator().next().getKey();
         Document doc = dbf.newDocumentBuilder().newDocument();
 
-        Element rootDuplicatePrefix = underTest.newRootElement(doc, ns, qualifiedElement);
+        Element rootDuplicatePrefix = DomWriterUtil.newRootElement(doc, ns, qualifiedElement);
 
         XMLConstants.NS_TO_PREFIX_MAP.values().forEach(prefix -> {
             String attrName = "xmlns:" + prefix;
@@ -269,7 +270,7 @@ public class J10PMetadataDomWriterTest {
         qualifiedElement = novelPrefix + ":foo";
         doc = dbf.newDocumentBuilder().newDocument();
 
-        Element rootNovelPrefix = underTest.newRootElement(doc, ns, qualifiedElement);
+        Element rootNovelPrefix = DomWriterUtil.newRootElement(doc, ns, qualifiedElement);
 
         XMLConstants.NS_TO_PREFIX_MAP.values().forEach(prefix -> {
             String attrName = "xmlns:" + prefix;

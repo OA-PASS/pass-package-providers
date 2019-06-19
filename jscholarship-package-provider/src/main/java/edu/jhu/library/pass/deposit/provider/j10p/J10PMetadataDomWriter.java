@@ -15,44 +15,34 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import au.edu.apsr.mtk.base.AmdSec;
-import au.edu.apsr.mtk.base.Constants;
 import au.edu.apsr.mtk.base.Div;
 import au.edu.apsr.mtk.base.DmdSec;
-import au.edu.apsr.mtk.base.FLocat;
-import au.edu.apsr.mtk.base.File;
-import au.edu.apsr.mtk.base.FileGrp;
 import au.edu.apsr.mtk.base.FileSec;
 import au.edu.apsr.mtk.base.Fptr;
-import au.edu.apsr.mtk.base.METS;
 import au.edu.apsr.mtk.base.METSException;
-import au.edu.apsr.mtk.base.METSWrapper;
 import au.edu.apsr.mtk.base.MdSec;
 import au.edu.apsr.mtk.base.MdWrap;
-import au.edu.apsr.mtk.base.SourceMD;
 import au.edu.apsr.mtk.base.StructMap;
-import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetadataDomWriter;
-import edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants;
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import edu.jhu.library.pass.deposit.provider.shared.dspace.AbstractDspaceMetadataDomWriter;
 import org.dataconservancy.pass.deposit.model.DepositMetadata;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.OutputStream;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DomWriterUtil.asQname;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DomWriterUtil.createDmdSec;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DomWriterUtil.mintId;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DomWriterUtil.newDocument;
+import static edu.jhu.library.pass.deposit.provider.shared.dspace.DomWriterUtil.newRootElement;
 import static edu.jhu.library.pass.deposit.provider.shared.dspace.MetsMdType.DC;
 import static edu.jhu.library.pass.deposit.provider.shared.dspace.MetsMdType.OTHER;
 import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DCTERMS_NS;
@@ -77,137 +67,22 @@ import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.D
 import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_NS;
 import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_PROVENANCE;
 import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.DIM_QUALIFIER;
-import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.NS_TO_PREFIX_MAP;
-import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XSI_NS;
-import static edu.jhu.library.pass.deposit.provider.shared.dspace.XMLConstants.XSI_NS_PREFIX;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
-public class J10PMetadataDomWriter implements DspaceMetadataDomWriter {
-
-    static final String METS_ID = "DSPACE-METS-SWORD";
-
-    static final String METS_OBJ_ID = "DSPACE-METS-SWORD-OBJ";
-
-    static final String METS_DSPACE_LABEL = "DSpace SWORD Item";
-
-    static final String METS_DSPACE_PROFILE = "DSpace METS SIP Profile 1.0";
-
-    static final String CONTENT_USE = "CONTENT";
-
-    static final String LOCTYPE_URL = "URL";
-
-    /**
-     * Package-private for unit testing
-     */
-    Document metsDocument;
-
-    private DocumentBuilderFactory dbf;
-
-    private METS mets;
+public class J10PMetadataDomWriter extends AbstractDspaceMetadataDomWriter {
 
     private int authorIndex;
 
-    J10PMetadataDomWriter(DocumentBuilderFactory dbf) {
-        try {
-            this.dbf = dbf;
-            this.metsDocument = dbf.newDocumentBuilder().newDocument();
-            Element root = metsDocument.createElementNS(Constants.NS_METS, Constants.ELEMENT_METS);
-            metsDocument.appendChild(root);
-            this.mets = new METS(metsDocument);
-            this.mets.setID(mintId());
-            this.mets.setProfile(METS_DSPACE_PROFILE);
-            this.mets.setLabel(METS_DSPACE_LABEL);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+    public J10PMetadataDomWriter(DocumentBuilderFactory dbf) {
+        super(dbf);
     }
 
-    public void write(OutputStream out) {
-        METSWrapper wrapper = null;
-        try {
-            wrapper = new METSWrapper(metsDocument);
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        wrapper.write(out);
-    }
-
-    public J10PMetadataDomWriter addSubmission(DepositSubmission submission) {
-        try {
-            if (getFileGrpByUse(CONTENT_USE) == null || getFileGrpByUse(CONTENT_USE).getFiles().isEmpty()) {
-                throw new IllegalStateException("No <fileGrp USE=\"" + CONTENT_USE + "\"> element was found, or was" +
-                        " empty.  Resources must be added before submissions.  Has addResource(Resource) been called?");
-            }
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
-        try {
-            mapStructMap(submission, mapDmdSec(submission), mets.getFileSec());
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
-        return this;
-    }
-
-    StructMap mapStructMap(DepositSubmission submission, Collection<DmdSec> dmdSec, FileSec fileSec) {
-        StructMap structMap = null;
-        try {
-            structMap = this.mets.newStructMap();
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        structMap.setID(mintId());
-        structMap.setLabel("DSpace CONTENT bundle structure");
-
-        Div itemDiv = null;
-        try {
-            itemDiv = structMap.newDiv();
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        itemDiv.setID(mintId());
-        itemDiv.setLabel("DSpace Item Div");
-        itemDiv.setDmdID(dmdSec.stream().map(MdSec::getID).collect(Collectors.joining(" ")));
-
-        Div finalItemDiv = itemDiv;
-        try {
-            fileSec.getFileGrpByUse(CONTENT_USE)
-                    .stream()
-                    .flatMap(fileGrp -> {
-                        try {
-                            return fileGrp.getFiles().stream();
-                        } catch (METSException e) {
-                            throw new RuntimeException(e.getMessage(), e);
-                        }
-                    })
-                    .forEach(f -> {
-                        Fptr filePtr = null;
-                        try {
-                            filePtr = finalItemDiv.newFptr();
-                        } catch (METSException e) {
-                            throw new RuntimeException(e.getMessage(), e);
-                        }
-                        filePtr.setID(mintId());
-                        filePtr.setFileID(f.getID());
-                        finalItemDiv.addFptr(filePtr);
-                    });
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
-        this.mets.addStructMap(structMap);
-        structMap.addDiv(itemDiv);
-        return structMap;
-    }
-
-    Collection<DmdSec> mapDmdSec(DepositSubmission submission) throws METSException {
+    protected Collection<DmdSec> mapDmdSec(DepositSubmission submission) throws METSException {
         List<DmdSec> result = new ArrayList<>();
         Element dcRecord = createDublinCoreMetadataDCMES(submission);
-        DmdSec dcDmdSec = getDmdSec(null);   // creates a new DmdSec
+        DmdSec dcDmdSec = createDmdSec(mets);
 
         try {
             MdWrap dcMdWrap = dcDmdSec.newMdWrap();
@@ -227,7 +102,7 @@ public class J10PMetadataDomWriter implements DspaceMetadataDomWriter {
 
         if (submission.getMetadata().getArticleMetadata().getEmbargoLiftDate() != null) {
             Element dimRecord = createDimMetadataForEmbargo(submission);
-            DmdSec dimDmdSec = getDmdSec(null);  // creates a new DmdSec
+            DmdSec dimDmdSec = createDmdSec(mets);
 
             try {
                 MdWrap dimMdWrap = dimDmdSec.newMdWrap();
@@ -249,7 +124,7 @@ public class J10PMetadataDomWriter implements DspaceMetadataDomWriter {
     }
 
     private Element createDimMetadataForEmbargo(DepositSubmission submission) {
-        Document dimDocument = newDocument();
+        Document dimDocument = newDocument(dbf);
         Element dimRoot = newRootElement(dimDocument, DIM_NS, asQname(DIM_NS, DIM));
         dimDocument.appendChild(dimRoot);
 
@@ -314,7 +189,7 @@ public class J10PMetadataDomWriter implements DspaceMetadataDomWriter {
      * @return
      */
     Element createDublinCoreMetadataQualified(DepositSubmission submission) {
-        Document dcDocument = newDocument();
+        Document dcDocument = newDocument(dbf);
 
         // Root <record> element
         Element record = newRootElement(dcDocument, DCTERMS_NS, "qualifieddc");
@@ -398,7 +273,7 @@ public class J10PMetadataDomWriter implements DspaceMetadataDomWriter {
      * @return
      */
     Element createDublinCoreMetadataDCMES(DepositSubmission submission) {
-        Document dcDocument = newDocument();
+        Document dcDocument = newDocument(dbf);
 
         // Root <record> element
         // TODO - What is the correct qualified name for DCMES data?
@@ -494,259 +369,4 @@ public class J10PMetadataDomWriter implements DspaceMetadataDomWriter {
         return record;
     }
 
-    /**
-     * Add a {@link PackageStream.Resource resource} to the DOM.  This creates a METS {@code File} with a {@code FLocat}
-     * for the resource.  The resource's primary checksum, size, mime type, and name are included in the METS DOM.
-     * The {@code FLocat} will be a URL type, using the resource name as the location.
-     *
-     * @param resource the package resource to be represented in the DOM
-     */
-    public J10PMetadataDomWriter addResource(PackageStream.Resource resource) {
-        File resourceFile = null;
-        try {
-            resourceFile = createFile(CONTENT_USE);
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
-        if (resource.checksum() != null) {
-            resourceFile.setChecksum(resource.checksum().asHex());
-            resourceFile.setChecksumType(resource.checksum().algorithm().name());
-        }
-
-        if (resource.sizeBytes() > -1) {
-            resourceFile.setSize(resource.sizeBytes());
-        }
-
-        if (resource.mimeType() != null && resource.mimeType().trim().length() > 0) {
-            resourceFile.setMIMEType(resource.mimeType());
-        }
-
-        FLocat locat = null;
-        try {
-            locat = resourceFile.newFLocat();
-            resourceFile.addFLocat(locat);
-        } catch (METSException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        locat.setID(mintId());
-        locat.setHref(resource.name());
-        locat.setLocType(LOCTYPE_URL);
-
-        return this;
-    }
-
-    /**
-     * Creates a new element in the supplied document, using the supplied namespace and qualified name.  This method
-     * adds {@code xmlns} attributes for each namespace->prefix mappling in {@link XMLConstants#NS_TO_PREFIX_MAP}
-     * <p>
-     * Package-private for unit testing
-     * </p>
-     *
-     * @param doc
-     * @param namespace
-     * @param qualifiedName
-     * @return
-     */
-    Element newRootElement(Document doc, String namespace, String qualifiedName) {
-        Element root = doc.createElementNS(namespace, qualifiedName);
-        root.setAttribute("xmlns:" + XSI_NS_PREFIX, XSI_NS);
-        NS_TO_PREFIX_MAP.keySet().stream().collect(Collectors.toMap(NS_TO_PREFIX_MAP::get, (key) -> key)).entrySet()
-                .stream().filter((entry) -> {
-            // filter out the namespace prefix supplied by the qualifiedName parameter, as the writer will add that
-            // prefix in automatically
-            if (qualifiedName.contains(":")) {
-                String prefix = qualifiedName.substring(0, qualifiedName.indexOf(":"));
-                if (prefix.equals(entry.getKey())) {
-                    return false;
-                }
-            }
-            return true;
-        }).forEach((entry) -> root.setAttribute("xmlns:" + entry.getKey(), entry.getValue()));
-        return root;
-    }
-
-    /**
-     * Creates a new {@link Document} from the {@link #dbf DocumentBuilderFactory}
-     *
-     * @return a new {@link Document}
-     */
-    private Document newDocument() {
-        Document dcDocument = null;
-        try {
-            DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-            dcDocument = documentBuilder.newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-        return dcDocument;
-    }
-
-    private File createFile(String use) throws METSException {
-        FileGrp fileGrp = getFileGrpByUse(use);
-        File file = fileGrp.newFile();
-        fileGrp.addFile(file);
-        file.setID(mintId());
-        return file;
-    }
-
-    /**
-     * Obtains the {@code <fileGrp>} element with a {@code USE} equal to the supplied {@code use} value.  If the element
-     * does not exist, it is created and assigned an identifier.
-     *
-     * @param use the content use for the {@code FileGrp}
-     * @return the {@code FileGrp} with a {@code USE} equal to {@code use}
-     */
-    private FileGrp getFileGrpByUse(String use) throws METSException {
-        List<FileGrp> fileGroups = getFileSec().getFileGrpByUse(use);
-        if (fileGroups == null || fileGroups.isEmpty()) {
-            return createFileGrp(use);
-        }
-
-        return fileGroups.get(0);
-    }
-
-    /**
-     * Creates the {@code <fileGrp>} element with a {@code USE} equal to the supplied {@code use} value, and assigns it
-     * an identifier.
-     *
-     * @param use the content use for the {@code FileGrp}
-     * @return the {@code FileGrp} with a {@code USE} equal to {@code use}
-     */
-    private FileGrp createFileGrp(String use) throws METSException {
-        FileSec fileSec = getFileSec();
-        FileGrp fileGrp = fileSec.newFileGrp();
-        fileSec.addFileGrp(fileGrp);
-        fileGrp.setID(mintId());
-        fileGrp.setUse(use);
-        return fileGrp;
-    }
-
-    /**
-     * Obtains the only {@code <fileSec>} element from the METS document.  If the element does not exist, it is created
-     * and assigned an identifier.
-     *
-     * @return the {@code FileSec} for the current METS document
-     */
-    private FileSec getFileSec() throws METSException {
-        FileSec fileSec = mets.getFileSec();
-        if (fileSec == null) {
-            return createFileSec();
-        }
-
-        return fileSec;
-    }
-
-    /**
-     * Creates a new {@code <fileSec>} element from the METS document and assigns it an identifier.
-     *
-     * @return the newly created {@code FileSec} for the current METS document
-     */
-    private FileSec createFileSec() throws METSException {
-        FileSec fs = mets.newFileSec();
-        mets.setFileSec(fs);
-        fs.setID(mintId());
-        return fs;
-    }
-
-    private SourceMD getSourceMd(String id) throws METSException {
-        if (id == null) {
-            return createSourceMd();
-        }
-
-        Optional<AmdSec> amdSec = mets
-                .getAmdSecs()
-                .stream()
-                .filter(candidateAmdSec -> candidateAmdSec.getSourceMD(id) != null)
-                .findAny();
-
-        if (amdSec.isPresent()) {
-            return amdSec.get().getSourceMD(id);
-        }
-
-        throw new RuntimeException("SourceMD with id '" + id + "' not found.");
-    }
-
-    private SourceMD createSourceMd() throws METSException {
-        AmdSec amdSec = getAmdSec();
-        SourceMD sourceMD = amdSec.newSourceMD();
-        sourceMD.setID(mintId());
-        amdSec.addSourceMD(sourceMD);
-        return sourceMD;
-    }
-
-    private AmdSec getAmdSec() throws METSException {
-        if (mets.getAmdSecs() == null || mets.getAmdSecs().isEmpty()) {
-            return createAmdSec();
-        }
-
-        return mets.getAmdSecs().get(0);
-    }
-
-    private AmdSec createAmdSec() throws METSException {
-        AmdSec as = mets.newAmdSec();
-        mets.addAmdSec(as);
-        as.setID(mintId());
-        return as;
-    }
-
-    /**
-     * Obtains the specified {@code <dmdSec>}, or creates a new {@code <dmdSec>} if {@code id} is {@code null}.
-     *
-     * @param id the identifier of the {@code <dmdSec>} to retrieve, or {@code null} to create a new {@code <dmdSec>}
-     * @return the {@code <dmdSec>}
-     * @throws RuntimeException if the {@code <dmdSec>} specified by {@code id} does not exist
-     */
-    private DmdSec getDmdSec(String id) throws METSException {
-        if (id == null) {
-            return createDmdSec();
-        }
-
-        DmdSec dmdSec = null;
-        if ((dmdSec = mets.getDmdSec(id)) == null) {
-            throw new RuntimeException("DmdSec with id '" + id + "' not found.");
-        }
-
-        return dmdSec;
-    }
-
-    /**
-     * Creates a new {@code <dmdSec>} element, gives it an identifier, and returns.
-     *
-     * @return a new {@code <dmdSec>} with an auto-generated id
-     */
-    private DmdSec createDmdSec() throws METSException {
-        DmdSec ds = mets.newDmdSec();
-        ds.setID(mintId());
-        return ds;
-    }
-
-    /**
-     * Mints a unique, opaque, string identifier, suitable for identifying and linking between elements in a METS
-     * document.
-     *
-     * @return an identifier
-     */
-    private static String mintId() {
-        return UUID.randomUUID().toString();
-    }
-
-    /**
-     * Returns the qualified form of {@code elementName} after mapping the {@code namespace} to a prefix.
-     * if {@code elementName} is already in a qualified form (e.g. contains a {@code :}), it is return unmodified.
-     *
-     * @param namespace the namespace for {@code elementName}
-     * @param elementName the element name, which may already be qualified
-     * @return the qualified name for {@code elementName}
-     * @throws IllegalStateException if a {@code namespace} for which there is no prefix mapping is encountered
-     */
-    private static String asQname(String namespace, String elementName) {
-        if (elementName.contains(":")) {
-            return elementName;
-        }
-        if (!NS_TO_PREFIX_MAP.containsKey(namespace)) {
-            throw new IllegalStateException("Missing prefix mapping for namespace '" + namespace + "'");
-        }
-        return String.format("%s:%s", NS_TO_PREFIX_MAP.get(namespace), elementName);
-    }
 }
