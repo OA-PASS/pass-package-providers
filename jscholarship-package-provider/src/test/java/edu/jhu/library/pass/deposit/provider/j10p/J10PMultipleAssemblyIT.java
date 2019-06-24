@@ -15,7 +15,6 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.MultipleAssemblyDspaceMetsAssemblerIT;
 import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
 import org.junit.BeforeClass;
@@ -29,11 +28,7 @@ public class J10PMultipleAssemblyIT extends MultipleAssemblyDspaceMetsAssemblerI
 
     @BeforeClass
     public static void initAssembler() {
-        J10PMetadataDomWriterFactory metsWriterFactory = new J10PMetadataDomWriterFactory(
-                DocumentBuilderFactory.newInstance());
-        DspaceMetsPackageProviderFactory packageProviderFactory = new DspaceMetsPackageProviderFactory(
-                metsWriterFactory);
-        underTest = new J10PDspaceMetsAssembler(metadataBuilderFactory(), resourceBuilderFactory(), packageProviderFactory);
+        underTest = new J10PDspaceMetsAssembler(metadataBuilderFactory(), resourceBuilderFactory(), DocumentBuilderFactory.newInstance());
     }
 
     @Override

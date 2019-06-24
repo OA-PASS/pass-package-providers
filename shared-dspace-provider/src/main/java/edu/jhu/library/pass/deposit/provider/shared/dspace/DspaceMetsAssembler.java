@@ -50,14 +50,10 @@ public abstract class DspaceMetsAssembler extends AbstractAssembler {
      */
     public static final String APPLICATION_ZIP = "application/zip";
 
-    private DspaceMetsPackageProviderFactory packageProviderFactory;
-
     @Autowired
     public DspaceMetsAssembler(MetadataBuilderFactory mbf,
-                               ResourceBuilderFactory rbf,
-                               DspaceMetsPackageProviderFactory packageProviderFactory) {
+                               ResourceBuilderFactory rbf) {
         super(mbf, rbf);
-        this.packageProviderFactory = packageProviderFactory;
     }
 
     @Override
@@ -66,8 +62,10 @@ public abstract class DspaceMetsAssembler extends AbstractAssembler {
                                                 MetadataBuilder mb, ResourceBuilderFactory rbf,
                                                 Map<String, Object> options) {
         buildMetadata(mb, options);
-        DspaceMetsPackageProvider packageProvider = this.packageProviderFactory.newInstance();
+        DspaceMetsPackageProvider packageProvider = getPackageProviderFactory().newInstance();
         return new ArchivingPackageStream(submission, custodialResources, mb, rbf, options, packageProvider);
     }
+
+    protected abstract DspaceMetsPackageProviderFactory getPackageProviderFactory();
 
 }

@@ -16,7 +16,6 @@
 package edu.jhu.library.pass.deposit.provider.j10p;
 
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsAssembler;
-import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageVerifier;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions.Archive;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
@@ -39,10 +38,7 @@ public class J10PMetsThreadedAssemblyIT extends ThreadedAssemblyIT {
 
     @Override
     protected AbstractAssembler assemblerUnderTest() {
-        J10PMetadataDomWriterFactory metsWriterFactory =
-                new J10PMetadataDomWriterFactory(DocumentBuilderFactory.newInstance());
-        DspaceMetsPackageProviderFactory ppf = new DspaceMetsPackageProviderFactory(metsWriterFactory);
-        return new J10PDspaceMetsAssembler(mbf, rbf, ppf);
+        return new J10PDspaceMetsAssembler(mbf, rbf, DocumentBuilderFactory.newInstance());
     }
 
     @Override

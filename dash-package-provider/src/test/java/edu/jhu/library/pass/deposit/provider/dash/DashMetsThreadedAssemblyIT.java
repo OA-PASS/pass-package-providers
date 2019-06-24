@@ -19,7 +19,6 @@
 package edu.jhu.library.pass.deposit.provider.dash;
 
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsAssembler;
-import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageVerifier;
 import org.dataconservancy.pass.client.PassClient;
 import org.dataconservancy.pass.client.PassClientFactory;
@@ -28,14 +27,12 @@ import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
 import org.dataconservancy.pass.deposit.assembler.shared.PackageVerifier;
 import org.dataconservancy.pass.deposit.assembler.shared.ThreadedAssemblyIT;
 import org.dataconservancy.pass.deposit.builder.fs.FilesystemModelBuilder;
-import org.junit.Before;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertTrue;
 
 public class DashMetsThreadedAssemblyIT extends ThreadedAssemblyIT {
 
@@ -45,11 +42,7 @@ public class DashMetsThreadedAssemblyIT extends ThreadedAssemblyIT {
     protected AbstractAssembler assemblerUnderTest() {
         builder = new FilesystemModelBuilder(true);
         passClient = PassClientFactory.getPassClient();
-
-        DashMetadataDomWriterFactory metsWriterFactory =
-                new DashMetadataDomWriterFactory(DocumentBuilderFactory.newInstance(), passClient);
-        DspaceMetsPackageProviderFactory ppf = new DspaceMetsPackageProviderFactory(metsWriterFactory);
-        DspaceMetsAssembler assembler = new DashDspaceMetsAssembler(mbf, rbf, ppf);
+        DspaceMetsAssembler assembler = new DashDspaceMetsAssembler(mbf, rbf, DocumentBuilderFactory.newInstance(), passClient);
 
         // Normally set by Spring, but since this IT isn't using Spring, we need to set these properties here
         assembler.setFedoraBaseUrl(System.getProperty("pass.fedora.baseurl", System.getenv("PASS_FEDORA_BASEURL")));

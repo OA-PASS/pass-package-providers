@@ -20,19 +20,33 @@ package edu.jhu.library.pass.deposit.provider.dash;
 
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsAssembler;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
+import org.dataconservancy.pass.client.PassClient;
 import org.dataconservancy.pass.deposit.assembler.shared.MetadataBuilderFactory;
 import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 @Component
 public class DashDspaceMetsAssembler extends DspaceMetsAssembler {
+
+    private DocumentBuilderFactory dbf;
+
+    private PassClient passClient;
 
     @Autowired
     public DashDspaceMetsAssembler(MetadataBuilderFactory mbf,
                                    ResourceBuilderFactory rbf,
-                                   DspaceMetsPackageProviderFactory packageProviderFactory) {
-        super(mbf, rbf, packageProviderFactory);
+                                   DocumentBuilderFactory dbf,
+                                   PassClient passClient) {
+        super(mbf, rbf);
+        this.dbf = dbf;
+        this.passClient = passClient;
     }
 
+    @Override
+    protected DspaceMetsPackageProviderFactory getPackageProviderFactory() {
+        return new DspaceMetsPackageProviderFactory(new DashMetadataDomWriterFactory(dbf, passClient));
+    }
 }

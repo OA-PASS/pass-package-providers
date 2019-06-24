@@ -21,16 +21,25 @@ import org.dataconservancy.pass.deposit.assembler.shared.MetadataBuilderFactory;
 import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderFactory;
 import org.springframework.stereotype.Component;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
 @Component
 public class J10PDspaceMetsAssembler extends DspaceMetsAssembler {
 
+    private DocumentBuilderFactory dbf;
+
     public J10PDspaceMetsAssembler(MetadataBuilderFactory mbf,
                                    ResourceBuilderFactory rbf,
-                                   DspaceMetsPackageProviderFactory packageProviderFactory) {
-        super(mbf, rbf, packageProviderFactory);
+                                   DocumentBuilderFactory dbf) {
+        super(mbf, rbf);
+        this.dbf = dbf;
     }
 
+    @Override
+    protected DspaceMetsPackageProviderFactory getPackageProviderFactory() {
+        return new DspaceMetsPackageProviderFactory(new J10PMetadataDomWriterFactory(dbf));
+    }
 }

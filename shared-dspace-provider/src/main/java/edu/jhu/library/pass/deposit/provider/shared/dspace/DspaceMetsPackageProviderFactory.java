@@ -16,18 +16,14 @@
 package edu.jhu.library.pass.deposit.provider.shared.dspace;
 
 import edu.jhu.library.pass.deposit.provider.shared.PackageProviderFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
-@Component
 public class DspaceMetsPackageProviderFactory implements PackageProviderFactory {
 
     private DspaceMetadataDomWriterFactory domWriterFactory;
 
-    @Autowired
     public DspaceMetsPackageProviderFactory(DspaceMetadataDomWriterFactory domWriterFactory) {
         this.domWriterFactory = domWriterFactory;
     }

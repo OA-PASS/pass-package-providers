@@ -18,7 +18,6 @@
 
 package edu.jhu.library.pass.deposit.provider.dash;
 
-import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.MultipleAssemblyDspaceMetsAssemblerIT;
 import org.dataconservancy.pass.client.PassClient;
 import org.dataconservancy.pass.client.PassClientFactory;
@@ -34,11 +33,7 @@ public class DashMultipleAssemblyIT extends MultipleAssemblyDspaceMetsAssemblerI
 
     @BeforeClass
     public static void initAssembler() {
-        DashMetadataDomWriterFactory metsWriterFactory = new DashMetadataDomWriterFactory(
-                DocumentBuilderFactory.newInstance(), passClient);
-        DspaceMetsPackageProviderFactory packageProviderFactory = new DspaceMetsPackageProviderFactory(
-                metsWriterFactory);
-        underTest = new DashDspaceMetsAssembler(metadataBuilderFactory(), resourceBuilderFactory(), packageProviderFactory);
+        underTest = new DashDspaceMetsAssembler(metadataBuilderFactory(), resourceBuilderFactory(), DocumentBuilderFactory.newInstance(), passClient);
 
         // Normally set by Spring, but since this IT isn't using Spring, we need to set these properties here
         underTest.setFedoraBaseUrl(System.getProperty("pass.fedora.baseurl", System.getenv("PASS_FEDORA_BASEURL")));

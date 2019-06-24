@@ -17,7 +17,6 @@ package edu.jhu.library.pass.deposit.provider.j10p;
 
 import edu.jhu.library.pass.deposit.provider.shared.dspace.BaseDspaceMetsAssemblerIT;
 import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsAssembler;
-import edu.jhu.library.pass.deposit.provider.shared.dspace.DspaceMetsPackageProviderFactory;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.DigestObserver;
 import org.apache.commons.io.input.ObservableInputStream;
@@ -63,11 +62,7 @@ public class J10PAssemblerIT extends BaseDspaceMetsAssemblerIT {
 
     @Override
     protected DspaceMetsAssembler assemblerUnderTest() {
-        J10PMetadataDomWriterFactory domWriterFactory =
-                new J10PMetadataDomWriterFactory(DocumentBuilderFactory.newInstance());
-        DspaceMetsPackageProviderFactory packageProviderFactory =
-                new DspaceMetsPackageProviderFactory(domWriterFactory);
-        return new J10PDspaceMetsAssembler(mbf, rbf, packageProviderFactory);
+        return new J10PDspaceMetsAssembler(mbf, rbf, DocumentBuilderFactory.newInstance());
     }
 
     /**
