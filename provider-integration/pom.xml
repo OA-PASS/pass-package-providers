@@ -425,6 +425,22 @@
 
         <dependency>
             <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+            <artifactId>dash-package-provider</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+            <artifactId>dash-package-provider</artifactId>
+            <version>${project.parent.version}</version>
+            <scope>test</scope>
+            <type>test-jar</type>
+            <classifier>tests</classifier>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
             <artifactId>bagit-package-provider</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>

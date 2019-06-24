@@ -20,6 +20,7 @@ import org.dataconservancy.pass.deposit.assembler.Assembler;
 import org.dataconservancy.pass.deposit.assembler.PackageStream;
 import org.dataconservancy.pass.deposit.builder.fs.FilesystemModelBuilder;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
+import org.junit.Before;
 import org.junit.Test;
 import resources.SharedSubmissionUtil;
 
@@ -44,10 +45,13 @@ public abstract class MultipleAssemblyDspaceMetsAssemblerIT extends BaseDspaceMe
 
     @Override
     public void setUp() throws Exception {
-        builder = new FilesystemModelBuilder();
-
         assertNotNull("Subclasses must set the static field " + this.getClass().getSimpleName() + ".underTest " +
                 "with an instance of the DspaceMetsAssembler being tested.", underTest);
+    }
+
+    @Before
+    public void initBuilder() {
+        builder = new FilesystemModelBuilder();
     }
 
     /**

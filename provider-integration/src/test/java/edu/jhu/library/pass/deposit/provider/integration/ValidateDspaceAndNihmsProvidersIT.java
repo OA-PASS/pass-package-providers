@@ -135,6 +135,10 @@ public class ValidateDspaceAndNihmsProvidersIT extends SubmitAndValidatePackages
             return bagitVerifier;
         }
 
+        if (explodedPackage.getPackageFile().toString().contains("dash")) {
+            return dspaceVerifier;
+        }
+
         fail("Unable to select PackageVerifier");
         return null;
     }
