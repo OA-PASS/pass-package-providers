@@ -147,7 +147,7 @@
         <fast-classpath-scanner.version>3.1.5</fast-classpath-scanner.version>
         <jackson.version>2.9.6</jackson.version>
         <messaging-support.version>0.1.2-3.4</messaging-support.version>
-        <deposit-services.version>1.0.0-3.4-SNAPSHOT</deposit-services.version>
+        <deposit-services.version>1.0.0-3.4</deposit-services.version>
         <joda-time.version>2.10.1</joda-time.version>
         <handlebars.version>4.1.0</handlebars.version>
 
@@ -161,7 +161,7 @@
         <docker.postgres.version>oapass/postgres:latest</docker.postgres.version>
         <docker.dspace.version>oapass/dspace:latest</docker.dspace.version>
         <docker.ftp.version>oapass/ftpserver:latest</docker.ftp.version>
-        <docker.deposit-services-core.version>oapass/deposit-services-core:${deposit-services.version}</docker.deposit-services-core.version>
+        <docker.deposit-services-core.version>oapass/deposit-services-core:1.0.0-3.4@sha256:e475b5c73d98e38a66a1675724bce095ba027022edb7774b583cfcb01c81057a</docker.deposit-services-core.version>
         <docker.assets.version>birkland/assets@sha256:60310d68c7ab910096f471bf6636b35487c52ab6db970fc280959f49eec0f465</docker.assets.version>
 
         <pass.jsonld.context>https://oa-pass.github.io/pass-data-model/src/main/resources/context-3.4.jsonld</pass.jsonld.context>
