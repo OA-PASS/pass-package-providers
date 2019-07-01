@@ -197,7 +197,7 @@
                                             <PASS_FEDORA_USER>${pass.fedora.user}</PASS_FEDORA_USER>
                                             <PASS_FEDORA_PASSWORD>${pass.fedora.password}</PASS_FEDORA_PASSWORD>
                                             <PASS_FEDORA_BASEURL>${pass.fedora.baseurl}</PASS_FEDORA_BASEURL>
-                                            <PASS_DEPOSIT_WORKERS_CONCURRENCY>8</PASS_DEPOSIT_WORKERS_CONCURRENCY>
+                                            <PASS_DEPOSIT_WORKERS_CONCURRENCY>10</PASS_DEPOSIT_WORKERS_CONCURRENCY>
                                         </env>
                                     </run>
                                 </image>
