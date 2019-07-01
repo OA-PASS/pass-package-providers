@@ -22,7 +22,7 @@
     <parent>
         <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
         <artifactId>package-providers</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>shared-dspace-provider</artifactId>
