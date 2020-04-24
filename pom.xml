@@ -162,7 +162,7 @@
         <docker.postgres.version>oapass/postgres:latest</docker.postgres.version>
         <docker.dspace.version>oapass/dspace:20200409@sha256:99df12f10846f2a2d62058cf4eef631393d7949a343b233a9e487d54fd82a483</docker.dspace.version>
         <docker.ftp.version>oapass/ftpserver:latest</docker.ftp.version>
-        <docker.deposit-services-core.version>oapass/deposit-services-core:1.0.1-3.4-SNAPSHOT@sha256:4c4750938f94e6530b30fcfc266f31a88388fc3ac48d493ec0972a23869e9882</docker.deposit-services-core.version>
+        <docker.deposit-services-core.version>oapass/deposit-services-core:1.0.1-3.4-SNAPSHOT@sha256:9c5dee30c082cf248aa9bb98a2b312a9812b787bff5211c822ac7a742f12b8d1</docker.deposit-services-core.version>
         <docker.assets.version>birkland/assets@sha256:60310d68c7ab910096f471bf6636b35487c52ab6db970fc280959f49eec0f465</docker.assets.version>
 
         <pass.jsonld.context>https://oa-pass.github.io/pass-data-model/src/main/resources/context-3.4.jsonld</pass.jsonld.context>
