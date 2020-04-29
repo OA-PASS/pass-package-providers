@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
     <artifactId>package-providers</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <packaging>pom</packaging>
     <name>PASS Deposit Services Package Providers</name>
     <description>Responsible for the transfer of custody to downstream repositories</description>
@@ -490,7 +490,7 @@
         <connection>scm:git:https://github.com/OA-PASS/package-providers.git</connection>
         <developerConnection>scm:git:https://github.com/OA-PASS/package-providers.git</developerConnection>
         <url>https://github.com/OA-PASS/package-providers</url>
-        <tag>HEAD</tag>
+        <tag>0.0.2</tag>
     </scm>
 
 </project>

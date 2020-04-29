@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
         <artifactId>package-providers</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.2</version>
     </parent>
 
     <artifactId>bagit-package-provider</artifactId>
