@@ -82,7 +82,6 @@ public class MetadataTest {
                      qdc.getElementsByTagNameNS(DCTERMS_NS, DCT_BIBLIOCITATION).item(0).getTextContent());
     }
 
-
     @Test
     public void crossrefAndManyAuthors() throws Exception {
         // Create deposit services data model from JSON representing Submission

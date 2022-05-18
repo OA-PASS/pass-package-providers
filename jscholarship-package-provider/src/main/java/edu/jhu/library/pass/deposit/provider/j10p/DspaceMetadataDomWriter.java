@@ -257,13 +257,11 @@ public class DspaceMetadataDomWriter {
         dc.description.provenance: Submission published under an embargo, which will last until yyyy-MM-dd
          */
 
-
         ZonedDateTime embargoLiftDate = submission.getMetadata().getArticleMetadata().getEmbargoLiftDate();
         if (embargoLiftDate == null) {
             throw new NullPointerException("Embargo lift date should not be null.");
         }
         String formattedDate = embargoLiftDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
-
 
         // <dim:field mdschema="local" element="embargo" qualifier="terms">
         Element localEmbargoTerms = dimDocument.createElementNS(DIM_NS, asQname(DIM_NS, DIM_FIELD));
@@ -360,10 +358,10 @@ public class DspaceMetadataDomWriter {
             record.appendChild(msAbstractElement);
         }
 
-        // TODO: Journal metadata
+        // todo: Journal metadata
         // ...
 
-        // TODO: Article metadata
+        // todo: Article metadata
         // <dc:identifier> DOI for the published article
         // <dc:available> date available if there is an embargo on the published article
 
@@ -403,7 +401,7 @@ public class DspaceMetadataDomWriter {
         Document dcDocument = newDocument();
 
         // Root <record> element
-        // TODO - What is the correct qualified name for DCMES data?
+        // todo: What is the correct qualified name for DCMES data?
         Element record = newRootElement(dcDocument, DC_NS, "qualifieddc");
 
         dcDocument.appendChild(record);

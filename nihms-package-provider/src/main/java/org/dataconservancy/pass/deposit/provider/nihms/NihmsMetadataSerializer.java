@@ -83,7 +83,7 @@ public class NihmsMetadataSerializer implements StreamingSerializer {
                 writer.addAttribute("show_publisher_pdf", booleanConvert(manuscript.isShowPublisherPdf()));
                 if (metadata.getArticleMetadata() != null && metadata.getArticleMetadata()
                                                                      .getEmbargoLiftDate() != null) {
-                    // TODO: resolve the calculation of the embargo offset
+                    // todo: resolve the calculation of the embargo offset
                 }
 
                 if (manuscript.getManuscriptUrl() != null) {

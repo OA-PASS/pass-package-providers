@@ -36,6 +36,9 @@ import org.xml.sax.SAXException;
  */
 class DspaceDepositTestUtil {
 
+    private DspaceDepositTestUtil() {
+    }
+
     private static final Logger LOG = LoggerFactory.getLogger(DspaceDepositTestUtil.class);
 
     /**

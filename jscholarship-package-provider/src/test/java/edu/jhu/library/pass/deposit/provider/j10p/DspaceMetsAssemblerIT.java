@@ -107,7 +107,6 @@ public class DspaceMetsAssemblerIT extends BaseDspaceMetsAssemblerIT {
                 }
             });
 
-
         assertEquals(expectedChecksums.size(), actualChecksums.size());
         expectedChecksums.forEach((filename, checksum) -> {
             assertTrue(actualChecksums.containsKey(filename));

@@ -118,7 +118,7 @@ public class DspaceMetsPackageVerifier implements PackageVerifier {
                     // assert size
                     assertEquals(asJavaIoFile.length(), metsFile.getSize());
 
-                    // TODO assert mime type?
+                    // todo: assert mime type?
 
                 });
             } catch (METSException e) {
@@ -126,7 +126,7 @@ public class DspaceMetsPackageVerifier implements PackageVerifier {
             }
         });
 
-        // TODO: validate dmdSec and structMap
+        // todo: validate dmdSec and structMap
         /*
   <dmdSec GROUPID="21bd84fc-5722-400c-8a3f-c8f61d55b827" ID="997f0943-e079-4ce2-bd3c-e3233f7f602a">
     <mdWrap ID="472d554a-80e7-45a4-b2fc-87e9d0e27e8e" MDTYPE="DC">

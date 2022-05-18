@@ -63,15 +63,15 @@ public class ValidateDspaceAndNihmsProvidersIT extends SubmitAndValidatePackages
 
     private static final Logger LOG = LoggerFactory.getLogger(ValidateDspaceAndNihmsProvidersIT.class);
 
-    // Meta TODO: review below TODOs for accuracy/need
+    // Meta todo: review below todos for accuracy/need
 
-    // TODO: Submit to NIHMS Repository using Filesystem Transport and verify package
+    // todo: Submit to NIHMS Repository using Filesystem Transport and verify package
 
-    // TODO: Submit to J10P Repository using Filesystem Transport and verify package
+    // todo: Submit to J10P Repository using Filesystem Transport and verify package
 
-    // TODO: Submit to J10P Repository using SWORD Transport and verify logical success (separate IT)
+    // todo: Submit to J10P Repository using SWORD Transport and verify logical success (separate IT)
 
-    // TODO: Submit to NIHMS Repository using FTP Transport and verify logical success (separate IT)
+    // todo: Submit to NIHMS Repository using FTP Transport and verify logical success (separate IT)
 
     private DspaceMetsPackageVerifier dspaceVerifier;
 

@@ -23,6 +23,9 @@ import java.util.Map;
  */
 class XMLConstants {
 
+    private XMLConstants() {
+    }
+
     /**
      * Dublin Core Namespace
      */

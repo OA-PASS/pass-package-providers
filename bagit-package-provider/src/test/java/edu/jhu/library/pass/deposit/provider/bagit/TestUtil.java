@@ -23,6 +23,9 @@ import java.util.UUID;
  */
 public class TestUtil {
 
+    private TestUtil() {
+    }
+
     /**
      * Generates a random URI
      *

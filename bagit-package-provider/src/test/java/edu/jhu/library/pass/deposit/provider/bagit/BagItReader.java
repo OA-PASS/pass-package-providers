@@ -175,7 +175,6 @@ public class BagItReader {
             }
         };
 
-
         Stream.of(LF_ENCODED, CR_ENCODED, PERCENT_ENCODED)
               .forEach(encodedToken -> {
 
@@ -247,6 +246,5 @@ public class BagItReader {
                         throw new RuntimeException("Duplicate file path in manifest: " + value1);
                     }, LinkedHashMap::new));
     }
-
 
 }

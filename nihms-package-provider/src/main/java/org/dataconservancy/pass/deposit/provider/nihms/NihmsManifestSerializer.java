@@ -71,7 +71,7 @@ public class NihmsManifestSerializer implements StreamingSerializer {
             writer.append("\n");
         }
 
-        // FIXME: Hack to include the bulk_meta.xml in the manifest if it wasn't included
+        // fixme: Hack to include the bulk_meta.xml in the manifest if it wasn't included
         if (manifest.getFiles().stream().noneMatch(df -> df.getType() == DepositFileType.bulksub_meta_xml)) {
             includeBulkMetadataInManifest(writer, labelMaker);
         }

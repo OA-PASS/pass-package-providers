@@ -55,7 +55,7 @@ public class BagItWriter {
     public void writeTagLine(OutputStream out, String label, String value) throws IOException {
         validateLabel(label);
         String line = String.format(TAG_LINE, label, value);
-        // TODO format value for lines longer than 79 chars?
+        // todo: format value for lines longer than 79 chars?
         out.write(line.getBytes(charset));
     }
 

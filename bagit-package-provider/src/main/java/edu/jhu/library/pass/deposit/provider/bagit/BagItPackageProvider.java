@@ -217,12 +217,12 @@ public class BagItPackageProvider implements PackageProvider {
             packageResources.forEach(resource -> {
 
                 PackageStream.Checksum resourceChecksum = resource.checksums().stream()
-                                                                  .filter(
-                                                                      candidate -> candidate.algorithm() == checksum)
-                                                                  .findAny()
-                                                                  .orElseThrow(() ->
-                                                                                   new RuntimeException(
-                                                                                       "Missing " + checksum.name() + " checksum for " + resource.name()));
+                    .filter(
+                        candidate -> candidate.algorithm() == checksum)
+                    .findAny()
+                    .orElseThrow(() ->
+                        new RuntimeException(
+                            "Missing " + checksum.name() + " checksum for " + resource.name()));
 
                 try {
                     writer.writeManifestLine(out, resourceChecksum.asHex(), resource.name());
@@ -494,6 +494,5 @@ public class BagItPackageProvider implements PackageProvider {
         }
 
     }
-
 
 }

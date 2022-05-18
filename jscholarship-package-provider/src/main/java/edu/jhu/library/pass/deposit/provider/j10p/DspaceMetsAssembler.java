@@ -35,7 +35,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DspaceMetsAssembler extends AbstractAssembler {
 
-    // TODO: find a better place for these constants.
+    // todo: find a better place for these constants.
 
     /**
      * Package specification URI identifying a DSpace METS SIP.

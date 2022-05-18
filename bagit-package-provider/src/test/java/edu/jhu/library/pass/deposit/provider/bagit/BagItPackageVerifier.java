@@ -77,7 +77,7 @@ public class BagItPackageVerifier implements PackageVerifier {
      * and provide the options.
      * </p>
      * <p>
-     * TODO: put the runtime configuration of Deposit Services in a well-known location (e.g. as a binary in Fedora)
+     * todo:: put the runtime configuration of Deposit Services in a well-known location (e.g. as a binary in Fedora)
      *   whereby the {@code SubmitAndValidatePackagesIT} can find it and supply it to test methods.
      * </p>
      * <p>
@@ -177,7 +177,7 @@ public class BagItPackageVerifier implements PackageVerifier {
             throw new RuntimeException("Missing Bag info file: '" + bagInfo + "'", e);
         }
 
-        // TODO verify expected contents of bag info
+        // todo: verify expected contents of bag info
         assertTrue(entries.size() > 0);
     }
 
