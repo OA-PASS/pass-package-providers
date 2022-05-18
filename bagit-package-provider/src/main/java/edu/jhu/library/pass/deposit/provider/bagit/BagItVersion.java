@@ -20,7 +20,7 @@ package edu.jhu.library.pass.deposit.provider.bagit;
 
 public enum BagItVersion {
 
-    BAGIT_1_0 ("1.0", "1", "0", "");
+    BAGIT_1_0("1.0", "1", "0", "");
 
     private static final String VERSION_STRING = "%s.%s";
 

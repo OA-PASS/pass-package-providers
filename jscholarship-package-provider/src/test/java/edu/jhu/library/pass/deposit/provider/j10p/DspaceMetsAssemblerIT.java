@@ -15,25 +15,6 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.DigestObserver;
-import org.apache.commons.io.input.ObservableInputStream;
-import org.apache.commons.io.output.NullOutputStream;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
-import org.dataconservancy.pass.deposit.assembler.ResourceBuilder;
-import org.dataconservancy.pass.deposit.model.DepositFile;
-import org.junit.Test;
-import org.w3c.dom.Element;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_CHECKSUM;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_CHECKSUM_TYPE;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FILE;
@@ -49,6 +30,25 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.DigestObserver;
+import org.apache.commons.io.input.ObservableInputStream;
+import org.apache.commons.io.output.NullOutputStream;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
+import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import org.dataconservancy.pass.deposit.assembler.ResourceBuilder;
+import org.dataconservancy.pass.deposit.model.DepositFile;
+import org.junit.Test;
+import org.w3c.dom.Element;
 
 /**
  * Creates a package, then extracts it.  Performs some basic tests on the extracted package.
@@ -80,31 +80,32 @@ public class DspaceMetsAssemblerIT extends BaseDspaceMetsAssemblerIT {
         Map<String, PackageStream.Checksum> actualChecksums = new HashMap<>();
 
         asList(metsDoc.getElementsByTagNameNS(METS_NS, METS_FILE))
-                .forEach(fileElement -> {
-                    // expected checksums for each package resource
-                    String algo = fileElement.getAttribute(METS_CHECKSUM_TYPE);
-                    String checksumValue = fileElement.getAttribute(METS_CHECKSUM);
-                    String fileName = ((Element) fileElement.getFirstChild())
-                            .getAttributeNS(XLINK_NS, XLINK_HREF).substring("data/".length());
-                    PackageStream.Checksum checksum = mock(PackageStream.Checksum.class);
-                    Checksum.OPTS packageStreamAlgo = Checksum.OPTS.valueOf(algo);
-                    when(checksum.algorithm()).thenReturn(packageStreamAlgo);
-                    when(checksum.asHex()).thenReturn(checksumValue);
+            .forEach(fileElement -> {
+                // expected checksums for each package resource
+                String algo = fileElement.getAttribute(METS_CHECKSUM_TYPE);
+                String checksumValue = fileElement.getAttribute(METS_CHECKSUM);
+                String fileName = ((Element) fileElement.getFirstChild())
+                    .getAttributeNS(XLINK_NS, XLINK_HREF).substring("data/".length());
+                PackageStream.Checksum checksum = mock(PackageStream.Checksum.class);
+                Checksum.OPTS packageStreamAlgo = Checksum.OPTS.valueOf(algo);
+                when(checksum.algorithm()).thenReturn(packageStreamAlgo);
+                when(checksum.asHex()).thenReturn(checksumValue);
 
-                    expectedChecksums.put(fileName, checksum);
+                expectedChecksums.put(fileName, checksum);
 
-                    // calculate checksums for each package resource
-                    try (InputStream resourceIn = Files.newInputStream(extractedPackageDir.toPath().resolve("data/" + fileName));
-                         ObservableInputStream obsIn = new ObservableInputStream(resourceIn)) {
-                        ResourceBuilder builder = rbf.newInstance();
-                        DigestObserver digestObserver = new DigestObserver(builder, packageStreamAlgo);
-                        obsIn.add(digestObserver);
-                        IOUtils.copy(obsIn, new NullOutputStream());
-                        actualChecksums.put(fileName, builder.build().checksum());
-                    } catch (IOException e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
-                });
+                // calculate checksums for each package resource
+                try (InputStream resourceIn = Files.newInputStream(
+                    extractedPackageDir.toPath().resolve("data/" + fileName));
+                     ObservableInputStream obsIn = new ObservableInputStream(resourceIn)) {
+                    ResourceBuilder builder = rbf.newInstance();
+                    DigestObserver digestObserver = new DigestObserver(builder, packageStreamAlgo);
+                    obsIn.add(digestObserver);
+                    IOUtils.copy(obsIn, new NullOutputStream());
+                    actualChecksums.put(fileName, builder.build().checksum());
+                } catch (IOException e) {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
+            });
 
 
         assertEquals(expectedChecksums.size(), actualChecksums.size());
@@ -117,6 +118,7 @@ public class DspaceMetsAssemblerIT extends BaseDspaceMetsAssemblerIT {
 
     /**
      * Insures that there is a mimetype present and correct size attribute present on METS file elements
+     *
      * @throws Exception
      */
     @Test
@@ -126,18 +128,21 @@ public class DspaceMetsAssemblerIT extends BaseDspaceMetsAssemblerIT {
         // If we are to locate the sanitized file name on the filesystem, we have to repeat the sanitization function
         // on each filename in order to check for its existence
         Map<String, DepositFile> sanitizedCustodialResourcesMap = custodialResourcesMap.entrySet().stream()
-                .collect(Collectors.toMap(entry -> sanitizeFilename(entry.getKey()), Map.Entry::getValue));
+                                                                                       .collect(Collectors.toMap(
+                                                                                           entry -> sanitizeFilename(
+                                                                                               entry.getKey()),
+                                                                                           Map.Entry::getValue));
 
         asList(metsDoc.getElementsByTagNameNS(METS_NS, METS_FILE))
-                .forEach(fileElement -> {
-                    assertNotNull(fileElement.getAttribute(METS_MIMETYPE));
-                    String sanitizedFileName = ((Element) fileElement.getFirstChild())
-                            .getAttributeNS(XLINK_NS, XLINK_HREF).substring("data/".length());
-                    File file = new File(extractedPackageDir,"data/" + sanitizedFileName);
-                    assertTrue("File metadata references non-existent file: " + sanitizedFileName,
-                            file.exists());
-                    assertEquals((Long) file.length(), Long.valueOf(fileElement.getAttribute(METS_SIZE)));
-                });
+            .forEach(fileElement -> {
+                assertNotNull(fileElement.getAttribute(METS_MIMETYPE));
+                String sanitizedFileName = ((Element) fileElement.getFirstChild())
+                    .getAttributeNS(XLINK_NS, XLINK_HREF).substring("data/".length());
+                File file = new File(extractedPackageDir, "data/" + sanitizedFileName);
+                assertTrue("File metadata references non-existent file: " + sanitizedFileName,
+                           file.exists());
+                assertEquals((Long) file.length(), Long.valueOf(fileElement.getAttribute(METS_SIZE)));
+            });
     }
 
 }

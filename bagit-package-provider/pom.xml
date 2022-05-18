@@ -14,189 +14,191 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
-        <artifactId>package-providers</artifactId>
-        <version>0.0.3-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+    <artifactId>package-providers</artifactId>
+    <version>0.0.3-SNAPSHOT</version>
+  </parent>
 
-    <artifactId>bagit-package-provider</artifactId>
-    <name>BagIT Package Provider</name>
-    <description>Creates packages according to the BagIT IETF standard</description>
+  <artifactId>bagit-package-provider</artifactId>
+  <name>BagIT Package Provider</name>
+  <description>Creates packages according to the BagIT IETF standard</description>
 
-    <build>
+  <build>
 
-        <plugins>
+    <plugins>
 
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>docker-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>build-after-its</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>build</goal>
-                        </goals>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <name>providers/bagit-package-provider</name>
-                                    <build>
-                                        <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                                        <noCache>true</noCache>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-after-its</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+              <images>
+                <image>
+                  <name>providers/bagit-package-provider</name>
+                  <build>
+                    <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                    <noCache>true</noCache>
+                  </build>
+                </image>
+              </images>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-            </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
 
-        </plugins>
+    </plugins>
 
-    </build>
+  </build>
 
-    <dependencies>
+  <dependencies>
 
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-beans</artifactId>
-            <version>${spring-framework.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>${spring-framework.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass.deposit</groupId>
-            <artifactId>deposit-model</artifactId>
-            <version>${deposit-services.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <artifactId>deposit-model</artifactId>
+      <version>${deposit-services.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass.deposit</groupId>
-            <artifactId>assembler-api</artifactId>
-            <version>${deposit-services.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <artifactId>assembler-api</artifactId>
+      <version>${deposit-services.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass</groupId>
-            <artifactId>mets-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass</groupId>
+      <artifactId>mets-api</artifactId>
+      <version>${mets-api.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass.deposit</groupId>
-            <artifactId>shared-assembler</artifactId>
-            <version>${deposit-services.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <artifactId>shared-assembler</artifactId>
+      <version>${deposit-services.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass</groupId>
-            <artifactId>pass-model</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass</groupId>
+      <artifactId>pass-model</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass</groupId>
-            <artifactId>pass-client-api</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass</groupId>
+      <artifactId>pass-client-api</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+      <version>${joda-time.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.github.jknack</groupId>
-            <artifactId>handlebars</artifactId>
-            <version>${handlebars.version}</version>
-        </dependency>
+    <dependency>
+      <groupId>com.github.jknack</groupId>
+      <artifactId>handlebars</artifactId>
+      <version>${handlebars.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass</groupId>
-            <artifactId>pass-data-client</artifactId>
-            <scope>runtime</scope>
-            <exclusions>
-                <exclusion>
-                    <!-- org.elasticsearch.client:elasticsearch-rest-high-level-client -->
-                    <groupId>org.elasticsearch.client</groupId>
-                    <artifactId>elasticsearch-rest-high-level-client</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass</groupId>
+      <artifactId>pass-data-client</artifactId>
+      <scope>runtime</scope>
+      <exclusions>
+        <exclusion>
+          <!-- org.elasticsearch.client:elasticsearch-rest-high-level-client -->
+          <groupId>org.elasticsearch.client</groupId>
+          <artifactId>elasticsearch-rest-high-level-client</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass.deposit</groupId>
-            <artifactId>shared-assembler</artifactId>
-            <version>${deposit-services.version}</version>
-            <classifier>tests</classifier>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <artifactId>shared-assembler</artifactId>
+      <version>${deposit-services.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-        </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass.deposit</groupId>
-            <artifactId>shared-resources</artifactId>
-            <version>${deposit-services.version}</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <artifactId>shared-resources</artifactId>
+      <version>${deposit-services.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.dataconservancy.pass.deposit</groupId>
-            <artifactId>fedora-builder</artifactId>
-            <version>${deposit-services.version}</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <artifactId>fedora-builder</artifactId>
+      <version>${deposit-services.version}</version>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <scope>test</scope>
+    </dependency>
 
-    </dependencies>
+  </dependencies>
 
 </project>

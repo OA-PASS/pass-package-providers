@@ -29,6 +29,4 @@ public class DspaceMetadataDomWriterIT {
     private static final Logger LOG = LoggerFactory.getLogger(DspaceMetadataDomWriterIT.class);
 
 
-
-
 }

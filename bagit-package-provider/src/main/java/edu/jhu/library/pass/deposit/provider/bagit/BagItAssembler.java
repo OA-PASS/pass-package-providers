@@ -18,6 +18,11 @@
 
 package edu.jhu.library.pass.deposit.provider.bagit;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
+import java.util.List;
+import java.util.Map;
+
 import com.github.jknack.handlebars.Handlebars;
 import org.dataconservancy.pass.client.PassClient;
 import org.dataconservancy.pass.deposit.assembler.MetadataBuilder;
@@ -29,12 +34,6 @@ import org.dataconservancy.pass.deposit.assembler.shared.MetadataBuilderFactory;
 import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderFactory;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
 import org.springframework.stereotype.Component;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class BagItAssembler extends AbstractAssembler {
@@ -54,7 +53,8 @@ public class BagItAssembler extends AbstractAssembler {
                                                 Map<String, Object> options) {
 
         BagItPackageProvider packageProvider = new BagItPackageProvider(new BagItWriter(UTF_8),
-                new HandlebarsParameterizer(new Handlebars()), passClient);
+                                                                        new HandlebarsParameterizer(new Handlebars()),
+                                                                        passClient);
         return new ArchivingPackageStream(submission, custodialResources, mdb, rbf, options, packageProvider);
 
     }

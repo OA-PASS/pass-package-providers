@@ -16,47 +16,6 @@
 
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import au.edu.apsr.mtk.base.DmdSec;
-import au.edu.apsr.mtk.base.File;
-import au.edu.apsr.mtk.base.FileGrp;
-import au.edu.apsr.mtk.base.FileSec;
-import org.apache.tika.io.IOUtils;
-import org.dataconservancy.pass.deposit.DepositTestUtil;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
-import org.dataconservancy.pass.deposit.assembler.shared.ChecksumImpl;
-import org.dataconservancy.pass.deposit.model.DepositMetadata;
-import org.dataconservancy.pass.deposit.model.DepositSubmission;
-import org.dataconservancy.pass.deposit.model.JournalPublicationType;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-import org.junit.rules.TemporaryFolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URI;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCTERMS_NS;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_ABSTRACT;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_BIBLIOCITATION;
@@ -111,6 +70,47 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import au.edu.apsr.mtk.base.DmdSec;
+import au.edu.apsr.mtk.base.File;
+import au.edu.apsr.mtk.base.FileGrp;
+import au.edu.apsr.mtk.base.FileSec;
+import org.apache.tika.io.IOUtils;
+import org.dataconservancy.pass.deposit.DepositTestUtil;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
+import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import org.dataconservancy.pass.deposit.assembler.shared.ChecksumImpl;
+import org.dataconservancy.pass.deposit.model.DepositMetadata;
+import org.dataconservancy.pass.deposit.model.DepositSubmission;
+import org.dataconservancy.pass.deposit.model.JournalPublicationType;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
 /**
  * Unit tests most of the nuances of the {@link DspaceMetadataDomWriter}.
  */
@@ -125,8 +125,8 @@ public class DspaceMetadataDomWriterTest {
     private static final Logger LOG = LoggerFactory.getLogger(DspaceMetadataDomWriterTest.class);
 
     private List<Resource> custodialContent = Arrays.asList(
-            new ClassPathResource(this.getClass().getPackage().getName().replace(".", "/") + "/manuscript.txt"),
-            new ClassPathResource(this.getClass().getPackage().getName().replace(".", "/") + "/figure.jpg"));
+        new ClassPathResource(this.getClass().getPackage().getName().replace(".", "/") + "/manuscript.txt"),
+        new ClassPathResource(this.getClass().getPackage().getName().replace(".", "/") + "/figure.jpg"));
 
     private DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
@@ -141,11 +141,11 @@ public class DspaceMetadataDomWriterTest {
     /**
      * Creates a Mockito object for the DepositMetadata.Person class using the provided names and type.
      *
-     * @param first The person's first name, or null
+     * @param first  The person's first name, or null
      * @param middle The person's middle name, or null
-     * @param last The person's last name, or null
-     * @param full The person's full name, or null
-     * @param type The person's type (pi, copi, submitter, author)
+     * @param last   The person's last name, or null
+     * @param full   The person's full name, or null
+     * @param type   The person's type (pi, copi, submitter, author)
      * @return The newly created mock Person
      */
     private DepositMetadata.Person createMockPerson(String first, String middle, String last, String full,
@@ -155,22 +155,28 @@ public class DspaceMetadataDomWriterTest {
         when(contributor.getConstructedName()).thenCallRealMethod();
         when(contributor.getReversedName()).thenCallRealMethod();
 
-        if (first != null)
+        if (first != null) {
             when(contributor.getFirstName()).thenReturn(first);
-        if (middle != null)
+        }
+        if (middle != null) {
             when(contributor.getMiddleName()).thenReturn(middle);
-        if (last != null)
+        }
+        if (last != null) {
             when(contributor.getLastName()).thenReturn(last);
-        if (full != null)
+        }
+        if (full != null) {
             when(contributor.getFullName()).thenReturn(full);
-        if (type != null)
+        }
+        if (type != null) {
             when(contributor.getType()).thenReturn(type);
+        }
 
         return contributor;
     }
 
     /**
      * Writes a sample METS.xml file, and copies it to stderr if DEBUG is enabled
+     *
      * @throws Exception
      */
     @Test
@@ -178,7 +184,8 @@ public class DspaceMetadataDomWriterTest {
         DspaceMetadataDomWriter underTest = new DspaceMetadataDomWriter(DocumentBuilderFactory.newInstance());
 
         PackageStream.Resource r = mock(PackageStream.Resource.class);
-        when(r.checksums()).thenReturn(Collections.singletonList(new ChecksumImpl(Checksum.OPTS.MD5, new byte[128], "base64", "hex")));
+        when(r.checksums()).thenReturn(
+            Collections.singletonList(new ChecksumImpl(Checksum.OPTS.MD5, new byte[128], "base64", "hex")));
         when(r.mimeType()).thenReturn("application/octet-stream");
         when(r.name()).thenReturn("sample-resource.bin");
         when(r.sizeBytes()).thenReturn(1234L);
@@ -195,8 +202,10 @@ public class DspaceMetadataDomWriterTest {
         List<DepositMetadata.Person> contributors = new ArrayList<DepositMetadata.Person>();
         contributors.add(createMockPerson("John", "Q.", "Public", null, DepositMetadata.PERSON_TYPE.author));
         contributors.add(createMockPerson(null, null, null, "Jane Doe", DepositMetadata.PERSON_TYPE.author));
-        contributors.add(createMockPerson("Albert", null, "Einstein", "Albert Einstein", DepositMetadata.PERSON_TYPE.author));
-        contributors.add(createMockPerson("Stephen", null, "Hawking", "Stephen Hawking", DepositMetadata.PERSON_TYPE.author));
+        contributors.add(
+            createMockPerson("Albert", null, "Einstein", "Albert Einstein", DepositMetadata.PERSON_TYPE.author));
+        contributors.add(
+            createMockPerson("Stephen", null, "Hawking", "Stephen Hawking", DepositMetadata.PERSON_TYPE.author));
         when(mdHolder.getPersons()).thenReturn(contributors);
 
         when(mdHolder.getManuscriptMetadata()).thenReturn(manuscript);
@@ -205,10 +214,10 @@ public class DspaceMetadataDomWriterTest {
 
         when(manuscript.getTitle()).thenReturn("Two stupendous minds.");
         when(manuscript.getManuscriptUrl()).thenReturn(
-                URI.create("https://pass.library.johnshopkins.edu/fcrepo/rest/manuscripts/1234").toURL());
+            URI.create("https://pass.library.johnshopkins.edu/fcrepo/rest/manuscripts/1234").toURL());
         when(manuscript.isPublisherPdf()).thenReturn(false);
         when(manuscript.getMsAbstract()).thenReturn("This is an abstract for the manuscript, provided by the" +
-                " submitter.");
+                                                    " submitter.");
 
         when(article.getTitle()).thenReturn("Two stupendous minds");
         when(article.getDoi()).thenReturn(URI.create("https://dx.doi.org/123/456"));
@@ -250,7 +259,7 @@ public class DspaceMetadataDomWriterTest {
 
         String novelPrefix = "bar";
         assertFalse("Prefix '" + novelPrefix + "' was not expected to be present in the XMLConstants prefix map.",
-                XMLConstants.NS_TO_PREFIX_MAP.values().contains(novelPrefix));
+                    XMLConstants.NS_TO_PREFIX_MAP.values().contains(novelPrefix));
         String duplicatePrefix = XMLConstants.NS_TO_PREFIX_MAP.entrySet().iterator().next().getValue();
         String qualifiedElement = duplicatePrefix + ":foo";
         String ns = XMLConstants.NS_TO_PREFIX_MAP.entrySet().iterator().next().getKey();
@@ -261,7 +270,7 @@ public class DspaceMetadataDomWriterTest {
         XMLConstants.NS_TO_PREFIX_MAP.values().forEach(prefix -> {
             String attrName = "xmlns:" + prefix;
             assertNotNull("Expected attribute '" + attrName + "' to be present on the root element.",
-                    rootDuplicatePrefix.getAttribute(attrName));
+                          rootDuplicatePrefix.getAttribute(attrName));
         });
 
         qualifiedElement = novelPrefix + ":foo";
@@ -272,11 +281,11 @@ public class DspaceMetadataDomWriterTest {
         XMLConstants.NS_TO_PREFIX_MAP.values().forEach(prefix -> {
             String attrName = "xmlns:" + prefix;
             assertNotNull("Expected attribute '" + attrName + "' to be present on the root element.",
-                    rootNovelPrefix.getAttribute(attrName));
+                          rootNovelPrefix.getAttribute(attrName));
         });
 
         assertNotNull("Expected novel attribte 'xmlns:" + novelPrefix + "' to be present on the root element.",
-                rootNovelPrefix.getAttribute("xmlns:" + novelPrefix));
+                      rootNovelPrefix.getAttribute("xmlns:" + novelPrefix));
     }
 
     /**
@@ -382,15 +391,16 @@ public class DspaceMetadataDomWriterTest {
         Element file4 = (Element) result.getDocumentElement().getElementsByTagNameNS(METS_NS, METS_FILE).item(3);
         Element file5 = (Element) result.getDocumentElement().getElementsByTagNameNS(METS_NS, METS_FILE).item(4);
 
-        assertEquals(name2, ((Element)file1.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
-        assertEquals(name1, ((Element)file2.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
-        assertEquals(name5, ((Element)file3.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
-        assertEquals(name3, ((Element)file4.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
-        assertEquals(name4, ((Element)file5.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
+        assertEquals(name2, ((Element) file1.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
+        assertEquals(name1, ((Element) file2.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
+        assertEquals(name5, ((Element) file3.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
+        assertEquals(name3, ((Element) file4.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
+        assertEquals(name4, ((Element) file5.getFirstChild()).getAttributeNS(XLINK_NS, XLINK_HREF));
     }
 
     /**
      * When a resource is added to the METS document, only the first checksum is taken
+     *
      * @throws Exception
      */
     @Test
@@ -421,6 +431,7 @@ public class DspaceMetadataDomWriterTest {
 
     /**
      * Tests that the proper DC elements are generated
+     *
      * @throws Exception
      */
     @Test
@@ -452,9 +463,11 @@ public class DspaceMetadataDomWriterTest {
         when(submission.getMetadata()).thenReturn(md);
 
         // Only Jane Doe (author) will appear in the citation.
-        DepositMetadata.Person person1 = createMockPerson(null, null, null, "Jane Doe", DepositMetadata.PERSON_TYPE.author);
+        DepositMetadata.Person person1 = createMockPerson(null, null, null, "Jane Doe",
+                                                          DepositMetadata.PERSON_TYPE.author);
         DepositMetadata.Person person2 = createMockPerson("John", null, "Doe", null, DepositMetadata.PERSON_TYPE.pi);
-        DepositMetadata.Person person3 = createMockPerson(null, null, null, "Hulk Hogan", DepositMetadata.PERSON_TYPE.pi);
+        DepositMetadata.Person person3 = createMockPerson(null, null, null, "Hulk Hogan",
+                                                          DepositMetadata.PERSON_TYPE.pi);
         List<DepositMetadata.Person> contributors = Arrays.asList(person1, person2, person3);
         when(md.getPersons()).thenReturn(contributors);
 
@@ -473,9 +486,9 @@ public class DspaceMetadataDomWriterTest {
         assertNotNull(mdWrap.getAttribute(METS_ID));
         assertEquals(METS_MDTYPE_DC, mdWrap.getAttribute(METS_MDTYPE));
 
-        assertEquals(METS_XMLDATA, ((Element)mdWrap.getFirstChild()).getTagName());
+        assertEquals(METS_XMLDATA, ((Element) mdWrap.getFirstChild()).getTagName());
 
-        Element qdc = (Element)mdWrap.getFirstChild().getFirstChild();
+        Element qdc = (Element) mdWrap.getFirstChild().getFirstChild();
         assertEquals("qualifieddc", qdc.getTagName());
 
         assertEquals(3, qdc.getElementsByTagNameNS(DC_NS, DC_CONTRIBUTOR).getLength());
@@ -558,7 +571,8 @@ public class DspaceMetadataDomWriterTest {
         when(md.getManuscriptMetadata()).thenReturn(msMd);
         DepositSubmission submission = mock(DepositSubmission.class);
         when(submission.getMetadata()).thenReturn(md);
-        DepositMetadata.Person person1 = createMockPerson("Jane", null, "Doe", null, DepositMetadata.PERSON_TYPE.author);
+        DepositMetadata.Person person1 = createMockPerson("Jane", null, "Doe", null,
+                                                          DepositMetadata.PERSON_TYPE.author);
         when(md.getPersons()).thenReturn(Arrays.asList(person1));
 
         underTest.mapDmdSec(submission);
@@ -575,7 +589,7 @@ public class DspaceMetadataDomWriterTest {
             dmdSecGroupIds.add(dmdSecGroupId);
             final String name = candidate.getFirstChild().getFirstChild().getFirstChild().getLocalName();
             if (name.equals(DIM)) {
-                dim = (Element)candidate.getFirstChild().getFirstChild().getFirstChild();
+                dim = (Element) candidate.getFirstChild().getFirstChild().getFirstChild();
                 assertNotNull(candidate.getAttribute(METS_ID));
             }
         }
@@ -584,8 +598,8 @@ public class DspaceMetadataDomWriterTest {
         // the dmdSecGroupId should be unique (other dmdSecs should not share the DIM group Id)
         String finalDmdSecGroupId = dmdSecGroupId;
         assertEquals(1, dmdSecGroupIds.stream()
-                .filter(id -> id.equals(finalDmdSecGroupId)).collect(
-                        Collectors.toList()).size());
+                                      .filter(id -> id.equals(finalDmdSecGroupId)).collect(
+                Collectors.toList()).size());
 
         /*
         <dim:field element="embargo" mdschema="local" qualifier="lift">2018-04-29</dim:field>
@@ -598,19 +612,19 @@ public class DspaceMetadataDomWriterTest {
         assertEquals(3, dimFields.size());
 
         assertTrue(dimFields.stream().anyMatch(
-                e -> e.getAttribute(DIM_ELEMENT).equals(DIM_EMBARGO) &&
-                        e.getAttribute(DIM_MDSCHEMA).equals(DIM_MDSCHEMA_LOCAL) &&
-                        e.getAttribute(DIM_QUALIFIER).equals(DIM_EMBARGO_LIFT)));
+            e -> e.getAttribute(DIM_ELEMENT).equals(DIM_EMBARGO) &&
+                 e.getAttribute(DIM_MDSCHEMA).equals(DIM_MDSCHEMA_LOCAL) &&
+                 e.getAttribute(DIM_QUALIFIER).equals(DIM_EMBARGO_LIFT)));
 
         assertTrue(dimFields.stream().anyMatch(
-                e -> e.getAttribute(DIM_ELEMENT).equals(DIM_EMBARGO) &&
-                        e.getAttribute(DIM_MDSCHEMA).equals(DIM_MDSCHEMA_LOCAL) &&
-                        e.getAttribute(DIM_QUALIFIER).equals(DIM_EMBARGO_TERMS)));
+            e -> e.getAttribute(DIM_ELEMENT).equals(DIM_EMBARGO) &&
+                 e.getAttribute(DIM_MDSCHEMA).equals(DIM_MDSCHEMA_LOCAL) &&
+                 e.getAttribute(DIM_QUALIFIER).equals(DIM_EMBARGO_TERMS)));
 
         assertTrue(dimFields.stream().anyMatch(
-                e -> e.getAttribute(DIM_ELEMENT).equals(DIM_DESCRIPTION) &&
-                        e.getAttribute(DIM_MDSCHEMA).equals(DIM_MDSCHEMA_DC) &&
-                        e.getAttribute(DIM_QUALIFIER).equals(DIM_PROVENANCE)));
+            e -> e.getAttribute(DIM_ELEMENT).equals(DIM_DESCRIPTION) &&
+                 e.getAttribute(DIM_MDSCHEMA).equals(DIM_MDSCHEMA_DC) &&
+                 e.getAttribute(DIM_QUALIFIER).equals(DIM_PROVENANCE)));
     }
 
     /**
@@ -633,7 +647,7 @@ public class DspaceMetadataDomWriterTest {
         FileSec fileSec = mock(FileSec.class);
         FileGrp fileGrp = mock(FileGrp.class);
         when(fileSec.getFileGrpByUse(DspaceMetadataDomWriter.CONTENT_USE)).thenReturn(Collections.singletonList
-                (fileGrp));
+                                                                                                     (fileGrp));
 
         String fileId1 = UUID.randomUUID().toString();
         String fileId2 = UUID.randomUUID().toString();
@@ -661,15 +675,15 @@ public class DspaceMetadataDomWriterTest {
         Element div = (Element) structMap.getFirstChild();
         // div has DMDIDs for each DmdSec
         Arrays.stream(div.getAttribute(METS_DMDID).split(" "))
-                .forEach(dmdId -> assertTrue(dmdIds.stream().anyMatch(candidate -> candidate.equals(dmdId))));
+              .forEach(dmdId -> assertTrue(dmdIds.stream().anyMatch(candidate -> candidate.equals(dmdId))));
 
         // fptr for each File, each fptr links to a File
         List<Element> fptrs = DepositTestUtil.asList(div.getElementsByTagNameNS(METS_NS, METS_FPTR));
         assertEquals(files.size(), fptrs.size());
         fptrs.forEach(fptr -> assertTrue(files
-                .stream()
-                .map(File::getID)
-                .anyMatch(fileid -> fileid.equals(fptr.getAttribute(METS_FILEID)))));
+                                             .stream()
+                                             .map(File::getID)
+                                             .anyMatch(fileid -> fileid.equals(fptr.getAttribute(METS_FILEID)))));
     }
 
 }

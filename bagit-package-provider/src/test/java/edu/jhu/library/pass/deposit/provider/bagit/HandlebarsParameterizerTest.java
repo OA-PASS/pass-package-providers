@@ -15,6 +15,15 @@
  */
 package edu.jhu.library.pass.deposit.provider.bagit;
 
+import static edu.jhu.library.pass.deposit.provider.bagit.TestUtil.randomUri;
+import static java.lang.Math.pow;
+import static java.lang.Math.round;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+
 import com.github.jknack.handlebars.Handlebars;
 import org.apache.commons.io.IOUtils;
 import org.dataconservancy.pass.client.PassClient;
@@ -27,34 +36,28 @@ import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-
-import static edu.jhu.library.pass.deposit.provider.bagit.TestUtil.randomUri;
-import static java.lang.Math.pow;
-import static java.lang.Math.round;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
 public class HandlebarsParameterizerTest {
 
     private static final String HBM_TEMPLATE = "" +
-            "Source-Organization: {{sourceOrganization}}\n" +
-            "Organization-Address: {{organizationAddress}}\n" +
-            "Contact-Name: {{contactName}}\n" +
-            "Contact-Phone: {{contactEmail}}\n" +
-            "Contact-Email: {{contactPhone}}\n" +
-            "External-Description: Submitted as {{submissionUri}} to PASS on {{submissionDate}} by {{submissionUserFullName}} ({{submissionUserEmail}}), published as {{publisherId}}\n" +
-            "Bagging-Date: {{currentDate}}\n" +
-            "External-Identifier: {{publisherId}}\n" +
-            "Bag-Size: {{bagSizeHumanReadable}}\n" +
-            "Payload-Oxum: {{custodialFileCount}}.{{bagSizeBytes}}\n" +
-            "Internal-Sender-Identifier: {{submissionUri}}\n" +
-            "Internal-Sender-Description: Submitted as {{submissionUri}} to PASS on {{submissionDate}} by {{submissionUserFullName}} ({{submissionUserEmail}}), published as {{publisherId}}";
+                                               "Source-Organization: {{sourceOrganization}}\n" +
+                                               "Organization-Address: {{organizationAddress}}\n" +
+                                               "Contact-Name: {{contactName}}\n" +
+                                               "Contact-Phone: {{contactEmail}}\n" +
+                                               "Contact-Email: {{contactPhone}}\n" +
+                                               "External-Description: Submitted as {{submissionUri}} to PASS on " +
+                                               "{{submissionDate}} by {{submissionUserFullName}} " +
+                                               "({{submissionUserEmail}}), published as {{publisherId}}\n" +
+                                               "Bagging-Date: {{currentDate}}\n" +
+                                               "External-Identifier: {{publisherId}}\n" +
+                                               "Bag-Size: {{bagSizeHumanReadable}}\n" +
+                                               "Payload-Oxum: {{custodialFileCount}}.{{bagSizeBytes}}\n" +
+                                               "Internal-Sender-Identifier: {{submissionUri}}\n" +
+                                               "Internal-Sender-Description: Submitted as {{submissionUri}} to PASS " +
+                                               "on {{submissionDate}} by {{submissionUserFullName}} " +
+                                               "({{submissionUserEmail}}), published as {{publisherId}}";
 
     private static final String PUBLICATION_DOI = "10.1039/c7fo01251a";
 
@@ -105,14 +108,15 @@ public class HandlebarsParameterizerTest {
         model.setContactEmail("joecontact@jhu.edu");
         model.setSubmissionUser(submitter);
         model.setSubmission(passSubmission);
-        model.setSubmissionDate(ISODateTimeFormat.basicDateTimeNoMillis().withZoneUTC().print(passSubmission.getSubmittedDate()));
+        model.setSubmissionDate(
+            ISODateTimeFormat.basicDateTimeNoMillis().withZoneUTC().print(passSubmission.getSubmittedDate()));
         model.setSubmissionUserEmail(submitter.getEmail());
         model.setSubmissionUserUri(submitter.getId().toString());
         model.setSubmissionUserFullName("Joe User");
         model.setPublisherId(PUBLICATION_DOI);
         model.setSubmissionUri(passSubmission.getId().toString());
         model.setBagSizeHumanReadable("15 GiB");
-        model.setBagSizeBytes(15*(round(pow(2, 30))));
+        model.setBagSizeBytes(15 * (round(pow(2, 30))));
         model.setCustodialFileCount(300);
         model.setBagItVersion("1.0");
         model.setDepositSubmission(depositSubmission);

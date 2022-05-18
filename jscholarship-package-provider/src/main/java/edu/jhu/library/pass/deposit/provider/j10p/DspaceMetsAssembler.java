@@ -16,6 +16,11 @@
 
 package edu.jhu.library.pass.deposit.provider.j10p;
 
+import static org.dataconservancy.pass.deposit.assembler.shared.AssemblerSupport.buildMetadata;
+
+import java.util.List;
+import java.util.Map;
+
 import org.dataconservancy.pass.deposit.assembler.MetadataBuilder;
 import org.dataconservancy.pass.deposit.assembler.PackageStream;
 import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
@@ -26,11 +31,6 @@ import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderFactory;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Map;
-
-import static org.dataconservancy.pass.deposit.assembler.shared.AssemblerSupport.buildMetadata;
 
 @Component
 public class DspaceMetsAssembler extends AbstractAssembler {

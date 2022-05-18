@@ -15,14 +15,6 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import org.dataconservancy.pass.deposit.assembler.PackageStream.Resource;
-import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
-import org.dataconservancy.pass.deposit.assembler.shared.DepositFileResource;
-import org.dataconservancy.pass.deposit.assembler.shared.PackageProvider;
-import org.dataconservancy.pass.deposit.model.DepositSubmission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -33,6 +25,14 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import org.dataconservancy.pass.deposit.assembler.PackageStream.Resource;
+import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
+import org.dataconservancy.pass.deposit.assembler.shared.DepositFileResource;
+import org.dataconservancy.pass.deposit.assembler.shared.PackageProvider;
+import org.dataconservancy.pass.deposit.model.DepositSubmission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)

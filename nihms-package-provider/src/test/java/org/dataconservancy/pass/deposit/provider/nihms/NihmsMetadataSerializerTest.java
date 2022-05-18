@@ -16,6 +16,32 @@
 
 package org.dataconservancy.pass.deposit.provider.nihms;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Spliterator.ORDERED;
+import static java.util.Spliterator.SIZED;
+import static java.util.stream.StreamSupport.stream;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Spliterators.AbstractSpliterator;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.io.IOUtils;
 import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
 import org.dataconservancy.pass.deposit.model.DepositMetadata;
@@ -31,36 +57,6 @@ import org.xmlunit.validation.Languages;
 import org.xmlunit.validation.ValidationResult;
 import org.xmlunit.validation.Validator;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URI;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Spliterators;
-import java.util.Spliterators.AbstractSpliterator;
-import java.util.function.Consumer;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Spliterator.IMMUTABLE;
-import static java.util.Spliterator.ORDERED;
-import static java.util.Spliterator.SIZED;
-import static java.util.stream.StreamSupport.stream;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
 /**
  * This is a test for the metadata serializer. for now we just validate against the bulk submission dtd
  *
@@ -69,7 +65,7 @@ import static org.junit.Assert.assertTrue;
 public class NihmsMetadataSerializerTest {
 
     private static NihmsMetadataSerializer underTest;
-    private static DepositMetadata metadata= new DepositMetadata();
+    private static DepositMetadata metadata = new DepositMetadata();
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -148,7 +144,6 @@ public class NihmsMetadataSerializerTest {
         underTest = new NihmsMetadataSerializer(metadata);
     }
 
-
     @Test
     public void testSerializedMetadataValidity() throws Exception {
         SizedStream sizedStream = underTest.serialize();
@@ -173,7 +168,6 @@ public class NihmsMetadataSerializerTest {
         ValidationResult r = v.validateInstance(s);
         assertTrue(r.isValid());
     }
-
 
     @Test
     // DOI must be in "raw" format (no leading http://domain/ or https://domain/)
@@ -210,7 +204,9 @@ public class NihmsMetadataSerializerTest {
         DepositMetadata metadata = new DepositMetadata();
         DepositMetadata.Journal journalMd = new DepositMetadata.Journal();
         String expectedIssn = "foo";
-        String expectedPubType = JournalPublicationType.EPUB.name().toLowerCase(); // remember OPUB is mapped to EPUB when serializing
+        String expectedPubType = JournalPublicationType.EPUB.name()
+                                                            .toLowerCase(); // remember OPUB is mapped to EPUB when
+        // serializing
 
         DepositMetadata.IssnPubType issn = new DepositMetadata.IssnPubType(expectedIssn, JournalPublicationType.OPUB);
         journalMd.setIssnPubTypes(new HashMap<String, DepositMetadata.IssnPubType>() {
@@ -230,10 +226,11 @@ public class NihmsMetadataSerializerTest {
         assertEquals(1, issnNodes.getLength());
 
         Node actualIssn = asStream(issnNodes)
-                .filter(node -> expectedIssn.equals(node.getFirstChild().getNodeValue()))
-                .findAny()
-                .orElseThrow(() ->
-                        new RuntimeException("Missing expected <issn> element for " + expectedIssn + " and " + expectedPubType));
+            .filter(node -> expectedIssn.equals(node.getFirstChild().getNodeValue()))
+            .findAny()
+            .orElseThrow(() ->
+                             new RuntimeException(
+                                 "Missing expected <issn> element for " + expectedIssn + " and " + expectedPubType));
 
         assertEquals(expectedPubType, actualIssn.getAttributes().getNamedItem("pub-type").getNodeValue());
     }
@@ -293,11 +290,11 @@ public class NihmsMetadataSerializerTest {
 
         // Override the first and last name of the Person with null, and then set the full name to expected values
         DepositMetadata.Person submitter =
-                metadata.getPersons()
-                        .stream()
-                        .filter(p -> p.getType() == DepositMetadata.PERSON_TYPE.submitter)
-                        .findAny()
-                        .orElseThrow(() -> new RuntimeException("Missing Submitter for submission."));
+            metadata.getPersons()
+                    .stream()
+                    .filter(p -> p.getType() == DepositMetadata.PERSON_TYPE.submitter)
+                    .findAny()
+                    .orElseThrow(() -> new RuntimeException("Missing Submitter for submission."));
 
         String expectedFirstName = "MooFirstName";
         String expectedLastName = "CowLastName";
@@ -308,9 +305,9 @@ public class NihmsMetadataSerializerTest {
         Element doc = builder.parse(underTest.serialize().getInputStream()).getDocumentElement();
 
         Node foundPerson = asStream(doc.getElementsByTagName("person"))
-                .filter(node -> node.getAttributes().getNamedItem("email").getTextContent().equals(submitter.email))
-                .findAny()
-                .orElseThrow(() -> new RuntimeException("Missing submitter person in serialized metadata"));
+            .filter(node -> node.getAttributes().getNamedItem("email").getTextContent().equals(submitter.email))
+            .findAny()
+            .orElseThrow(() -> new RuntimeException("Missing submitter person in serialized metadata"));
 
         assertEquals(expectedFirstName, foundPerson.getAttributes().getNamedItem("fname").getTextContent());
         assertEquals(expectedLastName, foundPerson.getAttributes().getNamedItem("lname").getTextContent());
@@ -320,6 +317,7 @@ public class NihmsMetadataSerializerTest {
         int characteristics = SIZED | ORDERED;
         Stream<Node> nodeStream = stream(new AbstractSpliterator<Node>(nodeList.getLength(), characteristics) {
             int index = 0;
+
             @Override
             public boolean tryAdvance(Consumer<? super Node> action) {
                 if (nodeList.getLength() == index) {

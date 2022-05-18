@@ -15,15 +15,8 @@
  */
 package org.dataconservancy.pass.deposit.provider.nihms;
 
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
-import org.dataconservancy.pass.deposit.assembler.shared.DepositFileResource;
-import org.dataconservancy.pass.deposit.assembler.shared.PackageProvider;
-import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
-import org.dataconservancy.pass.deposit.model.DepositFileType;
-import org.dataconservancy.pass.deposit.model.DepositSubmission;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
+import static org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.MANIFEST_ENTRY_NAME;
+import static org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.METADATA_ENTRY_NAME;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,8 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.MANIFEST_ENTRY_NAME;
-import static org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.METADATA_ENTRY_NAME;
+import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import org.dataconservancy.pass.deposit.assembler.shared.DepositFileResource;
+import org.dataconservancy.pass.deposit.assembler.shared.PackageProvider;
+import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
+import org.dataconservancy.pass.deposit.model.DepositFileType;
+import org.dataconservancy.pass.deposit.model.DepositSubmission;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -63,7 +63,7 @@ public class NihmsPackageProvider implements PackageProvider {
      */
     public static String getNonCollidingFilename(String fileName, DepositFileType fileType) {
         if ((fileName.contentEquals(NihmsManifestSerializer.METADATA_ENTRY_NAME) &&
-            fileType != DepositFileType.bulksub_meta_xml) ||
+             fileType != DepositFileType.bulksub_meta_xml) ||
             fileName.contentEquals(NihmsManifestSerializer.MANIFEST_ENTRY_NAME)) {
             fileName = REMEDIATED_FILE_PREFIX + fileName;
         }
@@ -99,20 +99,23 @@ public class NihmsPackageProvider implements PackageProvider {
         }
 
         String packagePath = getNonCollidingFilename(candidateName,
-                custodialResource.getDepositFile().getType());
+                                                     custodialResource.getDepositFile().getType());
         LOG.trace("Pathed {} as {}", custodialResource, packagePath);
         return packagePath;
     }
 
     @Override
-    public List<SupplementalResource> finish(DepositSubmission submission, List<PackageStream.Resource> packageResources) {
+    public List<SupplementalResource> finish(DepositSubmission submission,
+                                             List<PackageStream.Resource> packageResources) {
         ArrayList<SupplementalResource> supplementalResources = new ArrayList<>(2);
         SizedStream manifestStream = manifestSerializer.serialize();
         SizedStream metadataStream = metadataSerializer.serialize();
         supplementalResources.add(new NihmsSupplementalResource(MANIFEST_ENTRY_NAME, MANIFEST_ENTRY_NAME,
-                manifestStream.getLength(), manifestStream.getInputStream(), "NIHMS Manifest"));
+                                                                manifestStream.getLength(),
+                                                                manifestStream.getInputStream(), "NIHMS Manifest"));
         supplementalResources.add(new NihmsSupplementalResource(METADATA_ENTRY_NAME, METADATA_ENTRY_NAME,
-                metadataStream.getLength(), metadataStream.getInputStream(), "NIMS Metadata"));
+                                                                metadataStream.getLength(),
+                                                                metadataStream.getInputStream(), "NIMS Metadata"));
 
         return supplementalResources;
     }

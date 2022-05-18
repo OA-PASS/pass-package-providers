@@ -15,13 +15,6 @@
  */
 package edu.jhu.library.pass.deposit.provider.bagit;
 
-import org.junit.Test;
-
-import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR;
 import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR_ENCODED;
 import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.LF;
@@ -31,7 +24,16 @@ import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.PERCENT_EN
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.apache.commons.io.IOUtils.toInputStream;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -51,27 +53,32 @@ public class BagItReaderTest {
     private static final String FILENAME_WITH_ENCODED_CR = "file" + CR_ENCODED + "with" + CR_ENCODED + "lf";
 
     private static final String FILENAME_WITH_DOUBLE_ENCODED_SPACE =
-            "file" + PERCENT_DOUBLE_ENCODED_SPACE + "with" + PERCENT_DOUBLE_ENCODED_SPACE + "space";
+        "file" + PERCENT_DOUBLE_ENCODED_SPACE + "with" + PERCENT_DOUBLE_ENCODED_SPACE + "space";
 
     /**
      * Sample {@code bag-info.txt}
      */
     private static final String BAG_INFO = "" +
-            "Source-Organization: Johns Hopkins\n" +
-            "Organization-Address: 3400 N. Charles St, Baltimore, MD 21218\n" +
-            "Contact-Name: Joe Contact\n" +
-            "Contact-Phone: joecontact@jhu.edu\n" +
-            "Contact-Email: 555-555-5555\n" +
-            "Contact-Name: Jane Contact\n" +
-            "Contact-Phone: janecontact@jhu.edu\n" +
-            "Contact-Email: 123-456-7890\n" +
-            "External-Description: Submitted as uri:uuid:cf7a14da-8db4-4323-a15f-cff635ba6168 to PASS on 20190508T151013Z by Joe User (joeuser@user.com), published as 10.1039/c7fo01251a\n" +
-            "Bagging-Date: 2019-05-07\n" +
-            "External-Identifier: 10.1039/c7fo01251a\n" +
-            "Bag-Size: 15 GiB\n" +
-            "Payload-Oxum: 300.16106127360\n" +
-            "Internal-Sender-Identifier: uri:uuid:cf7a14da-8db4-4323-a15f-cff635ba6168\n" +
-            "Internal-Sender-Description: Submitted as uri:uuid:cf7a14da-8db4-4323-a15f-cff635ba6168 to PASS on 20190508T151013Z by Joe User (joeuser@user.com), published as 10.1039/c7fo01251a\n";
+                                           "Source-Organization: Johns Hopkins\n" +
+                                           "Organization-Address: 3400 N. Charles St, Baltimore, MD 21218\n" +
+                                           "Contact-Name: Joe Contact\n" +
+                                           "Contact-Phone: joecontact@jhu.edu\n" +
+                                           "Contact-Email: 555-555-5555\n" +
+                                           "Contact-Name: Jane Contact\n" +
+                                           "Contact-Phone: janecontact@jhu.edu\n" +
+                                           "Contact-Email: 123-456-7890\n" +
+                                           "External-Description: Submitted as " +
+                                           "uri:uuid:cf7a14da-8db4-4323-a15f-cff635ba6168 to PASS on 20190508T151013Z" +
+                                           " by Joe User (joeuser@user.com), published as 10.1039/c7fo01251a\n" +
+                                           "Bagging-Date: 2019-05-07\n" +
+                                           "External-Identifier: 10.1039/c7fo01251a\n" +
+                                           "Bag-Size: 15 GiB\n" +
+                                           "Payload-Oxum: 300.16106127360\n" +
+                                           "Internal-Sender-Identifier: uri:uuid:cf7a14da-8db4-4323-a15f-cff635ba6168" +
+                                           "\n" +
+                                           "Internal-Sender-Description: Submitted as " +
+                                           "uri:uuid:cf7a14da-8db4-4323-a15f-cff635ba6168 to PASS on 20190508T151013Z" +
+                                           " by Joe User (joeuser@user.com), published as 10.1039/c7fo01251a\n";
 
     /**
      * Simplified {@code bag-info.txt} encoded as UTF-16
@@ -83,23 +90,23 @@ public class BagItReaderTest {
      * Sample Bag Declaration {@code bagit.txt}
      */
     private static final String BAG_DECL = "" +
-            "BagIt-Version: 1.0\n" +
-            "Tag-File-Character-Encoding: UTF-8\n";
+                                           "BagIt-Version: 1.0\n" +
+                                           "Tag-File-Character-Encoding: UTF-8\n";
 
     /**
      * Sample manifest
      */
     private static final String MANIFEST = "" +
-            "hexchecksum_1 data/path/to/file.txt\n" +
-            "hexchecksum_2\tdata/path/to/file2.txt\n" +
-            "hexchecksum_3  data/path/to/file3.txt\n" +
-            "hexchecksum_4\t\tdata/path/to/file4.txt\n" +
-            "hexchecksum_5\t data/path/to/file5.txt\n" +
-            "hexchecksum_6 \tdata/path/to/file6.txt\n" +
-            "hexchecksum_7 \t data/path/to/file7.txt\n" +
-            "hexchecksum_8\t \tdata/path/to/file8.txt\n" +
-            "hexchecksum_1 data/path/to/file9.txt\n" +
-            "hexchecksum_1 data/" + FILENAME_WITH_DOUBLE_ENCODED_SPACE + "\n";
+                                           "hexchecksum_1 data/path/to/file.txt\n" +
+                                           "hexchecksum_2\tdata/path/to/file2.txt\n" +
+                                           "hexchecksum_3  data/path/to/file3.txt\n" +
+                                           "hexchecksum_4\t\tdata/path/to/file4.txt\n" +
+                                           "hexchecksum_5\t data/path/to/file5.txt\n" +
+                                           "hexchecksum_6 \tdata/path/to/file6.txt\n" +
+                                           "hexchecksum_7 \t data/path/to/file7.txt\n" +
+                                           "hexchecksum_8\t \tdata/path/to/file8.txt\n" +
+                                           "hexchecksum_1 data/path/to/file9.txt\n" +
+                                           "hexchecksum_1 data/" + FILENAME_WITH_DOUBLE_ENCODED_SPACE + "\n";
 
     private BagItReader reader = new BagItReader(UTF_8);
 
@@ -111,21 +118,21 @@ public class BagItReaderTest {
 
         // Verify we're supplying UTF_16 0x00E9 (the new line takes two bytes)
         byte[] input = BAG_INFO_UTF16.getBytes(UTF_16);
-        assertArrayEquals(new byte[] { (byte)0x00, (byte)0xE9 },
-                new byte[] { input[input.length - 4], input[input.length - 3] });
+        assertArrayEquals(new byte[] {(byte) 0x00, (byte) 0xE9},
+                          new byte[] {input[input.length - 4], input[input.length - 3]});
 
         // Read the InputStream, encoded with UTF_16.
         Map<String, List<String>> labelAndValue = reader.readLabelsAndValues(
-                toInputStream(BAG_INFO_UTF16, readerEncoding));
+            toInputStream(BAG_INFO_UTF16, readerEncoding));
 
         // Should be able to parse out the contact name
         String value = labelAndValue.get(BagMetadata.CONTACT_NAME).get(0);
 
         // Value should be properly encoded as UTF-8
-        assertArrayEquals(new byte[] { (byte)0xc3, (byte)0xa9 }, value.getBytes(UTF_8));
+        assertArrayEquals(new byte[] {(byte) 0xc3, (byte) 0xa9}, value.getBytes(UTF_8));
 
         // Or UTF-16 BOM 0xFEFF and 0x00E9 e acute
-        assertArrayEquals(new byte[] { (byte)0xFE, (byte)0xFF, (byte)0x00, (byte)0xE9 }, value.getBytes(UTF_16));
+        assertArrayEquals(new byte[] {(byte) 0xFE, (byte) 0xFF, (byte) 0x00, (byte) 0xE9}, value.getBytes(UTF_16));
     }
 
     @Test
@@ -186,8 +193,8 @@ public class BagItReaderTest {
 
         assertEquals(BagMetadata.INTERNAL_SENDER_DESCRIPTION, entry.getKey());
         assertEquals("Submitted as uri:uuid:cf7a14da-8db4-4323-a15f-cff635ba6168 to PASS on " +
-                "20190508T151013Z by Joe User (joeuser@user.com), published as 10.1039/c7fo01251a",
-                entry.getValue().get(0));
+                     "20190508T151013Z by Joe User (joeuser@user.com), published as 10.1039/c7fo01251a",
+                     entry.getValue().get(0));
         assertEquals(1, entry.getValue().size());
     }
 
@@ -219,6 +226,7 @@ public class BagItReaderTest {
     @Test
     public void decodeKitchenSink() {
         assertEquals(PERCENT + "foo bar" + PERCENT + LF + "baz" + PERCENT,
-                BagItReader.decodePath(PERCENT_ENCODED + "foo bar" + PERCENT_ENCODED + LF_ENCODED + "baz" + PERCENT_ENCODED));
+                     BagItReader.decodePath(
+                         PERCENT_ENCODED + "foo bar" + PERCENT_ENCODED + LF_ENCODED + "baz" + PERCENT_ENCODED));
     }
 }

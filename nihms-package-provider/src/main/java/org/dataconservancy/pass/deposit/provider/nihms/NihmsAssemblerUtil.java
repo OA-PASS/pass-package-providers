@@ -15,23 +15,28 @@
  */
 package org.dataconservancy.pass.deposit.provider.nihms;
 
-import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
 class NihmsAssemblerUtil {
 
+    private NihmsAssemblerUtil () {
+        //never called
+    }
+
     /**
      * Returns a {@code SizedStream} for reading the contents of the supplied {@code ByteArrayOutputStream}.
      * <p>
      * Implementation note: this method invokes {@link ByteArrayOutputStream#close()}.
      * </p>
+     *
      * @param os the output stream to adapt for reading
      * @return the {@code SizedStream} for reading the content of the supplied output stream
      */

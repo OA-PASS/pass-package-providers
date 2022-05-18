@@ -1,21 +1,21 @@
 {
   "settings": {
-    "index" : {
-      "refresh_interval" : "1s"
+    "index": {
+      "refresh_interval": "1s"
     },
     "analysis": {
-      "char_filter" : {
-        "fedora_uri_to_path" : {
+      "char_filter": {
+        "fedora_uri_to_path": {
           "type": "pattern_replace",
           "pattern": "\\Ahttp.*?/fcrepo/rest",
           "replacement": ""
         },
-        "nih_zero_ignore" : {
+        "nih_zero_ignore": {
           "type": "pattern_replace",
           "pattern": "\\A[A-Za-z]\\w\\d([A-Za-z][A-Za-z])0{0,4}(\\d{2,6})\\Z",
           "replacement": "$1$2"
         },
-        "period_dash_whitespace_ignore" : {
+        "period_dash_whitespace_ignore": {
           "type": "pattern_replace",
           "pattern": "\\.|-|\\s",
           "replacement": ""
@@ -25,17 +25,28 @@
         "ignorecase": {
           "type": "custom",
           "char_filter": [],
-          "filter": ["lowercase", "asciifolding"]
+          "filter": [
+            "lowercase",
+            "asciifolding"
+          ]
         },
         "fedora_uri": {
           "type": "custom",
-          "char_filter": ["fedora_uri_to_path"],
+          "char_filter": [
+            "fedora_uri_to_path"
+          ],
           "filter": []
         },
         "award_number": {
           "type": "custom",
-          "char_filter": ["period_dash_whitespace_ignore", "nih_zero_ignore"],
-          "filter": ["lowercase", "asciifolding"]
+          "char_filter": [
+            "period_dash_whitespace_ignore",
+            "nih_zero_ignore"
+          ],
+          "filter": [
+            "lowercase",
+            "asciifolding"
+          ]
         }
       }
     }
@@ -44,85 +55,272 @@
     "_doc": {
       "dynamic": false,
       "properties": {
-        "@context": {"type": "keyword", "normalizer": "fedora_uri"},
-        "@id": {"type": "keyword", "normalizer": "fedora_uri"},
-        "@type": {"type": "keyword"},
-        "abstract": {"type": "text"},
-        "accessUrl": {"type": "keyword"},
-        "affiliation": {"type": "text"},
-        "aggregatedDepositStatus": {"type": "keyword"},
-        "agreementText": {"type": "text"},
-        "awardDate": {"type": "date"},
-        "awardNumber": {"type": "keyword", "normalizer": "award_number"},
-        "awardStatus": {"type": "keyword"},
-        "comment": {"type": "text"},
-        "coPis": {"type": "keyword", "normalizer": "fedora_uri"},
-        "copyStatus": {"type": "keyword"},
-        "depositStatus": {"type": "keyword"},
-        "depositStatusRef": {"type": "keyword"},
-        "description": {"type": "text"},
-        "directFunder": {"type": "keyword", "normalizer": "fedora_uri"},
-        "displayName": {"type": "text", "analyzer": "simple"},
-        "doi": {"type": "keyword", "normalizer": "ignorecase"},
-        "email": {"type": "keyword", "normalizer": "ignorecase"},
-        "endDate": {"type": "date"},
-        "eventType": {"type": "keyword"},
-        "externalIds": {"type": "keyword", "normalizer": "fedora_uri"},
-        "fileRole": {"type": "keyword"},
-        "firstName": {"type": "text", "analyzer": "simple"},
-        "formSchema": {"type": "keyword"},
-        "grants": {"type": "keyword", "normalizer": "fedora_uri"},
-        "integrationType": {"type": "keyword"},
-        "institution": {"type": "keyword"},
-        "issue": {"type": "keyword"},
-        "issns": {"type": "keyword"},
-        "lastName": {"type": "text", "analyzer": "simple"},
-        "locatorIds": {"type": "keyword"},
-        "journal": {"type": "keyword", "normalizer": "fedora_uri"},
-        "journalName": {"type": "text"},
-        "journalName_suggest": {"type": "completion"},
-        "localKey": {"type": "keyword"},
-        "link": {"type": "keyword", "normalizer": "fedora_uri"},
-        "metadata": {"type": "text"},
-        "middleName": {"type": "text", "analyzer": "simple"},
-        "mimeType": {"type": "keyword"},
-        "name": {"type": "text"},
-        "nlmta": {"type": "keyword"},
-        "orcidId": {"type": "keyword"},
-        "performedDate": {"type": "date"},
-        "performedBy": {"type": "keyword", "normalizer": "fedora_uri"},
-        "performerRole": {"type": "keyword"},
-        "pi": {"type": "keyword", "normalizer": "fedora_uri"},
-        "pmcParticipation": {"type": "keyword"},
-        "pmid": {"type": "keyword"},
-        "policy": {"type": "keyword", "normalizer": "fedora_uri"},
-        "policyUrl": {"type": "keyword"},
-        "preparers": {"type": "keyword", "normalizer": "fedora_uri"},
-        "primaryFunder": {"type": "keyword", "normalizer": "fedora_uri"},
-        "projectName": {"type": "text"},
-        "publisher": {"type": "keyword", "normalizer": "fedora_uri"},
-        "publication": {"type": "keyword", "normalizer": "fedora_uri"},
-        "repository": {"type": "keyword", "normalizer": "fedora_uri"},
-        "repositoryKey": {"type": "keyword"},
-        "repositoryCopy": {"type": "keyword", "normalizer": "fedora_uri"},
-        "repositories": {"type": "keyword", "normalizer": "fedora_uri"},
-        "roles": {"type": "keyword"},
-        "schemas": {"type": "keyword"},
-        "source": {"type": "keyword"},
-        "startDate": {"type": "date"},
-        "submission": {"type": "keyword", "normalizer": "fedora_uri"},
-        "submissionStatus": {"type": "keyword"},
-        "submitted": {"type": "boolean"},
-        "submittedDate": {"type": "date"},
-        "submitter": {"type": "keyword", "normalizer": "fedora_uri"},
-        "submitterEmail": {"type": "keyword"},
-        "submitterName": {"type": "text", "analyzer": "simple"},
-        "title": {"type": "text"},
-        "uri": {"type": "keyword"},
-        "url": {"type": "keyword"},
-        "user": {"type": "keyword", "normalizer": "fedora_uri"},
-        "username": {"type": "keyword"},
-        "volume": {"type": "keyword"}
+        "@context": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "@id": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "@type": {
+          "type": "keyword"
+        },
+        "abstract": {
+          "type": "text"
+        },
+        "accessUrl": {
+          "type": "keyword"
+        },
+        "affiliation": {
+          "type": "text"
+        },
+        "aggregatedDepositStatus": {
+          "type": "keyword"
+        },
+        "agreementText": {
+          "type": "text"
+        },
+        "awardDate": {
+          "type": "date"
+        },
+        "awardNumber": {
+          "type": "keyword",
+          "normalizer": "award_number"
+        },
+        "awardStatus": {
+          "type": "keyword"
+        },
+        "comment": {
+          "type": "text"
+        },
+        "coPis": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "copyStatus": {
+          "type": "keyword"
+        },
+        "depositStatus": {
+          "type": "keyword"
+        },
+        "depositStatusRef": {
+          "type": "keyword"
+        },
+        "description": {
+          "type": "text"
+        },
+        "directFunder": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "displayName": {
+          "type": "text",
+          "analyzer": "simple"
+        },
+        "doi": {
+          "type": "keyword",
+          "normalizer": "ignorecase"
+        },
+        "email": {
+          "type": "keyword",
+          "normalizer": "ignorecase"
+        },
+        "endDate": {
+          "type": "date"
+        },
+        "eventType": {
+          "type": "keyword"
+        },
+        "externalIds": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "fileRole": {
+          "type": "keyword"
+        },
+        "firstName": {
+          "type": "text",
+          "analyzer": "simple"
+        },
+        "formSchema": {
+          "type": "keyword"
+        },
+        "grants": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "integrationType": {
+          "type": "keyword"
+        },
+        "institution": {
+          "type": "keyword"
+        },
+        "issue": {
+          "type": "keyword"
+        },
+        "issns": {
+          "type": "keyword"
+        },
+        "lastName": {
+          "type": "text",
+          "analyzer": "simple"
+        },
+        "locatorIds": {
+          "type": "keyword"
+        },
+        "journal": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "journalName": {
+          "type": "text"
+        },
+        "journalName_suggest": {
+          "type": "completion"
+        },
+        "localKey": {
+          "type": "keyword"
+        },
+        "link": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "metadata": {
+          "type": "text"
+        },
+        "middleName": {
+          "type": "text",
+          "analyzer": "simple"
+        },
+        "mimeType": {
+          "type": "keyword"
+        },
+        "name": {
+          "type": "text"
+        },
+        "nlmta": {
+          "type": "keyword"
+        },
+        "orcidId": {
+          "type": "keyword"
+        },
+        "performedDate": {
+          "type": "date"
+        },
+        "performedBy": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "performerRole": {
+          "type": "keyword"
+        },
+        "pi": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "pmcParticipation": {
+          "type": "keyword"
+        },
+        "pmid": {
+          "type": "keyword"
+        },
+        "policy": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "policyUrl": {
+          "type": "keyword"
+        },
+        "preparers": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "primaryFunder": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "projectName": {
+          "type": "text"
+        },
+        "publisher": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "publication": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "repository": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "repositoryKey": {
+          "type": "keyword"
+        },
+        "repositoryCopy": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "repositories": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "roles": {
+          "type": "keyword"
+        },
+        "schemas": {
+          "type": "keyword"
+        },
+        "source": {
+          "type": "keyword"
+        },
+        "startDate": {
+          "type": "date"
+        },
+        "submission": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "submissionStatus": {
+          "type": "keyword"
+        },
+        "submitted": {
+          "type": "boolean"
+        },
+        "submittedDate": {
+          "type": "date"
+        },
+        "submitter": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "submitterEmail": {
+          "type": "keyword"
+        },
+        "submitterName": {
+          "type": "text",
+          "analyzer": "simple"
+        },
+        "title": {
+          "type": "text"
+        },
+        "uri": {
+          "type": "keyword"
+        },
+        "url": {
+          "type": "keyword"
+        },
+        "user": {
+          "type": "keyword",
+          "normalizer": "fedora_uri"
+        },
+        "username": {
+          "type": "keyword"
+        },
+        "volume": {
+          "type": "keyword"
+        }
       }
     }
   }
