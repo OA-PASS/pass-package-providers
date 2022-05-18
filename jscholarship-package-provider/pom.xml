@@ -95,7 +95,7 @@
     <dependency>
       <groupId>org.dataconservancy.pass</groupId>
       <artifactId>mets-api</artifactId>
-      <version>${mets-api.version}}</version>
+      <version>${mets-api.version}</version>
     </dependency>
 
     <dependency>
