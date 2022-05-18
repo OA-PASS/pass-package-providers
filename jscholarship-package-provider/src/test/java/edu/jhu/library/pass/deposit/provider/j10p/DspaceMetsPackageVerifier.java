@@ -19,6 +19,7 @@ import static edu.jhu.library.pass.deposit.provider.j10p.DspaceMetsPackageProvid
 import static org.apache.commons.io.filefilter.FileFilterUtils.nameFileFilter;
 import static org.apache.commons.io.filefilter.FileFilterUtils.notFileFilter;
 import static org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
