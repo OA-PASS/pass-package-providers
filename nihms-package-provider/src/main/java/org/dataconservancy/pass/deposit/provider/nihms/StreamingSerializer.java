@@ -16,9 +16,9 @@
 
 package org.dataconservancy.pass.deposit.provider.nihms;
 
-import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
-
 import java.io.IOException;
+
+import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
 
 interface StreamingSerializer {
 

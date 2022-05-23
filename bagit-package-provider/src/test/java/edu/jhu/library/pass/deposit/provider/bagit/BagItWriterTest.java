@@ -15,12 +15,6 @@
  */
 package edu.jhu.library.pass.deposit.provider.bagit;
 
-import org.junit.Test;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.COLON;
 import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR;
 import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR_ENCODED;
@@ -30,6 +24,12 @@ import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.PERCENT;
 import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.PERCENT_ENCODED;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
+import org.junit.Test;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -119,13 +119,13 @@ public class BagItWriterTest {
     @Test
     public void encodeLineCrLf() {
         assertEquals("foo" + CR_ENCODED + LF_ENCODED + "bar",
-                BagItWriter.encodeLine("foo" + CR + LF + "bar"));
+                     BagItWriter.encodeLine("foo" + CR + LF + "bar"));
     }
 
     @Test
     public void encodeLinePercentWithLfAtEnd() {
         assertEquals(PERCENT_ENCODED + "foo" + PERCENT_ENCODED + LF,
-                BagItWriter.encodeLine(PERCENT + "foo" + PERCENT + LF));
+                     BagItWriter.encodeLine(PERCENT + "foo" + PERCENT + LF));
     }
 
     @Test
@@ -156,14 +156,15 @@ public class BagItWriterTest {
     @Test
     public void encodePathCrLf() {
         assertEquals("foo" + CR_ENCODED + LF_ENCODED + "bar",
-                BagItWriter.encodePath("foo" + CR + LF + "bar"));
+                     BagItWriter.encodePath("foo" + CR + LF + "bar"));
     }
 
     @Test
     public void encodePathPercentWithLfAtEnd() {
         assertEquals(PERCENT_ENCODED + "foo" + PERCENT_ENCODED + LF_ENCODED,
-                BagItWriter.encodePath(PERCENT + "foo" + PERCENT + LF));
+                     BagItWriter.encodePath(PERCENT + "foo" + PERCENT + LF));
     }
+
     @Test
     public void usesCharsetOnConstruction() throws IOException {
         // e with acute encoded as UTF-16 is 0x00E9
@@ -171,7 +172,7 @@ public class BagItWriterTest {
 
         // e with acute encoded as UTF-8 is 0xC3A9
         // byte array will be the 2's complement of 0xC3A9
-        byte[] expectedBytes = new byte[] { (byte)0xC3, (byte)0xA9 };
+        byte[] expectedBytes = new byte[] {(byte) 0xC3, (byte) 0xA9};
 
         // Create a bag writer that should encode using UTF-8
         BagItWriter writer = new BagItWriter(StandardCharsets.UTF_8);
@@ -181,6 +182,6 @@ public class BagItWriterTest {
         writer.writeTagLine(out, "test", acuteEUtf16);
 
         byte[] result = out.toByteArray();  // should end with 2's complement of 0xC3A9 followed by a LF
-        assertArrayEquals(expectedBytes, new byte[] { result[result.length - 3], result[result.length - 2] });
+        assertArrayEquals(expectedBytes, new byte[] {result[result.length - 3], result[result.length - 2]});
     }
 }

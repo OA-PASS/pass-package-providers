@@ -17,6 +17,12 @@
 package org.dataconservancy.pass.deposit.provider.nihms;
 
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.io.IOUtils;
 import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
 import org.dataconservancy.pass.deposit.model.DepositFile;
@@ -24,19 +30,13 @@ import org.dataconservancy.pass.deposit.model.DepositFileType;
 import org.dataconservancy.pass.deposit.model.DepositManifest;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-
 /**
  * @author Jim Martino (jrm@jhu.edu)
  */
 public class NihmsManifestSerializerTest {
 
     @Test
-    public void testManifestSerialization(){
+    public void testManifestSerialization() {
         DepositManifest manifest = new DepositManifest();
 
         DepositFile file1 = new DepositFile();
@@ -71,15 +71,15 @@ public class NihmsManifestSerializerTest {
 
         SizedStream sizedStream = underTest.serialize();
 
-        String expected = "figure" + "\t" + "File One Label" + "\t" +"File One name" + "\n" +
-                "bulksub_meta_xml"+ "\t" + "File Two Label" + "\t" +"File Two name" + "\n" +
-                "table" + "\t" + "File Three Label" + "\t" + "File Three name" + "\n" +
-                "manuscript" + "\t\t" + "File Four name"+ "\n";
+        String expected = "figure" + "\t" + "File One Label" + "\t" + "File One name" + "\n" +
+                          "bulksub_meta_xml" + "\t" + "File Two Label" + "\t" + "File Two name" + "\n" +
+                          "table" + "\t" + "File Three Label" + "\t" + "File Three name" + "\n" +
+                          "manuscript" + "\t\t" + "File Four name" + "\n";
 
         String actual = "";
 
         try {
-          actual = IOUtils.toString(sizedStream.getInputStream(), "UTF-8");
+            actual = IOUtils.toString(sizedStream.getInputStream(), "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -95,52 +95,50 @@ public class NihmsManifestSerializerTest {
         NihmsManifestSerializer.DepositFileLabelMaker labelMaker = underTest.new DepositFileLabelMaker();
 
         String label = labelMaker.getTypeUniqueLabel(DepositFileType.figure, null);
-        assertEquals("figure-1", label );
+        assertEquals("figure-1", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.figure, null);
-        assertEquals("figure-2", label );
+        assertEquals("figure-2", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.figure, "   ");
         assertEquals("figure-3", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.supplement, "figure-1");
-        assertEquals("figure-1", label );
+        assertEquals("figure-1", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.supplement, null);
-        assertEquals("supplement-1", label );
+        assertEquals("supplement-1", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.supplement, "");
-        assertEquals("supplement-2", label );
+        assertEquals("supplement-2", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.supplement, null);
-        assertEquals("supplement-3", label );
+        assertEquals("supplement-3", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.manuscript, "Moo Cows in the Pasture");
-        assertEquals("Moo Cows in the Pasture", label );
+        assertEquals("Moo Cows in the Pasture", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.figure, "Spotted Cows");
-        assertEquals("Spotted Cows", label );
+        assertEquals("Spotted Cows", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.figure, "Spotted Cows");
-        assertEquals("Spotted Cows-1", label );
+        assertEquals("Spotted Cows-1", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.figure, "Spotted Cows     ");
-        assertEquals("Spotted Cows-2", label );
+        assertEquals("Spotted Cows-2", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.figure, "Spotted Cows-2");
-        assertEquals("Spotted Cows-2-1", label );
+        assertEquals("Spotted Cows-2-1", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.table, "table");
-        assertEquals("table", label );
+        assertEquals("table", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.table, "table-1");
-        assertEquals("table-1", label );
+        assertEquals("table-1", label);
 
         label = labelMaker.getTypeUniqueLabel(DepositFileType.table, "");
-        assertEquals("table-2", label );
-
+        assertEquals("table-2", label);
 
     }
-    
+
 }
-    

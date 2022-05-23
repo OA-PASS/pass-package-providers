@@ -18,18 +18,9 @@
 
 package edu.jhu.library.pass.deposit.provider.bagit;
 
-import org.dataconservancy.pass.client.PassClient;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions;
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
-import org.dataconservancy.pass.deposit.assembler.shared.DepositFileResource;
-import org.dataconservancy.pass.deposit.assembler.shared.PackageProvider;
-import org.dataconservancy.pass.deposit.model.DepositSubmission;
-import org.dataconservancy.pass.model.Submission;
-import org.dataconservancy.pass.model.User;
-import org.joda.time.format.ISODateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
+import static java.net.URI.create;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.codec.binary.Hex.encodeHexString;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -46,16 +37,25 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import static java.net.URI.create;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.codec.binary.Hex.encodeHexString;
+import org.dataconservancy.pass.client.PassClient;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions;
+import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import org.dataconservancy.pass.deposit.assembler.shared.DepositFileResource;
+import org.dataconservancy.pass.deposit.assembler.shared.PackageProvider;
+import org.dataconservancy.pass.deposit.model.DepositSubmission;
+import org.dataconservancy.pass.model.Submission;
+import org.dataconservancy.pass.model.User;
+import org.joda.time.format.ISODateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 public class BagItPackageProvider implements PackageProvider {
 
     protected static final Logger LOG = LoggerFactory.getLogger(BagItPackageProvider.class);
 
     protected static final UnsupportedOperationException UOE =
-            new UnsupportedOperationException("Representation only exists in-memory.");
+        new UnsupportedOperationException("Representation only exists in-memory.");
 
     /**
      * Package options key that contains the classpath resource path of the {@code bag-info.txt} Handlebars template
@@ -180,12 +180,13 @@ public class BagItPackageProvider implements PackageProvider {
                                              List<PackageStream.Resource> packageResources) {
 
         List<SupplementalResource> supplementalResources =
-                new ArrayList<>(writePayloadManifests(submission, packageResources, packageOpts));
+            new ArrayList<>(writePayloadManifests(submission, packageResources, packageOpts));
         supplementalResources.add(writeBagDeclaration());
         supplementalResources.add(writeBagInfo(submission, packageResources,
-                this.getClass().getResourceAsStream((String) packageOpts.get(BAGINFO_TEMPLATE))));
+                                               this.getClass()
+                                                   .getResourceAsStream((String) packageOpts.get(BAGINFO_TEMPLATE))));
         supplementalResources.addAll(
-                writeTagfileManifests(submission, packageResources, packageOpts, supplementalResources));
+            writeTagfileManifests(submission, packageResources, packageOpts, supplementalResources));
 
         return supplementalResources;
     }
@@ -205,7 +206,7 @@ public class BagItPackageProvider implements PackageProvider {
 
         // Generate a payload manifest for each checksum in the package options
         Collection<PackageOptions.Checksum.OPTS> checksums = (Collection<PackageOptions.Checksum.OPTS>)
-                packageOptions.get(PackageOptions.Checksum.KEY);
+            packageOptions.get(PackageOptions.Checksum.KEY);
 
         List<SupplementalResource> manifests = new ArrayList<>(checksums.size());
 
@@ -216,10 +217,12 @@ public class BagItPackageProvider implements PackageProvider {
             packageResources.forEach(resource -> {
 
                 PackageStream.Checksum resourceChecksum = resource.checksums().stream()
-                        .filter(candidate -> candidate.algorithm() == checksum)
-                        .findAny()
-                        .orElseThrow(() ->
-                                new RuntimeException("Missing " + checksum.name() + " checksum for " + resource.name()));
+                    .filter(
+                        candidate -> candidate.algorithm() == checksum)
+                    .findAny()
+                    .orElseThrow(() ->
+                        new RuntimeException(
+                            "Missing " + checksum.name() + " checksum for " + resource.name()));
 
                 try {
                     writer.writeManifestLine(out, resourceChecksum.asHex(), resource.name());
@@ -231,9 +234,9 @@ public class BagItPackageProvider implements PackageProvider {
 
             String payloadManifestName = String.format(PAYLOAD_MANIFEST_TMPL, algo.getAlgo());
             manifests.add(new TagFile(payloadManifestName,
-                    payloadManifestName,
-                    out.toByteArray(),
-                    "Bag payload manifest for checksum algorithm " + algo.getAlgo()));
+                                      payloadManifestName,
+                                      out.toByteArray(),
+                                      "Bag payload manifest for checksum algorithm " + algo.getAlgo()));
         });
 
         return manifests;
@@ -248,7 +251,7 @@ public class BagItPackageProvider implements PackageProvider {
 
         // Generate a tag manifest for each checksum in the package options
         Collection<PackageOptions.Checksum.OPTS> checksums = (Collection<PackageOptions.Checksum.OPTS>)
-                packageOptions.get(PackageOptions.Checksum.KEY);
+            packageOptions.get(PackageOptions.Checksum.KEY);
 
         List<SupplementalResource> manifests = new ArrayList<>(checksums.size());
 
@@ -272,9 +275,9 @@ public class BagItPackageProvider implements PackageProvider {
 
             String tagFileManifestName = String.format(TAG_MANIFEST_TMPL, algo.getAlgo());
             manifests.add(new TagFile(tagFileManifestName,
-                    tagFileManifestName,
-                    out.toByteArray(),
-                    "Bag payload manifest for checksum algorithm " + algo.getAlgo()));
+                                      tagFileManifestName,
+                                      out.toByteArray(),
+                                      "Bag payload manifest for checksum algorithm " + algo.getAlgo()));
         });
 
         return manifests;
@@ -491,6 +494,5 @@ public class BagItPackageProvider implements PackageProvider {
         }
 
     }
-
 
 }

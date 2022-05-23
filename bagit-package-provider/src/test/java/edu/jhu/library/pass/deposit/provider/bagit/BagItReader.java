@@ -15,7 +15,13 @@
  */
 package edu.jhu.library.pass.deposit.provider.bagit;
 
-import org.apache.commons.io.IOUtils;
+import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR;
+import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR_ENCODED;
+import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.LF;
+import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.LF_ENCODED;
+import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.PERCENT;
+import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.PERCENT_ENCODED;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,13 +34,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR;
-import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.CR_ENCODED;
-import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.LF;
-import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.LF_ENCODED;
-import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.PERCENT;
-import static edu.jhu.library.pass.deposit.provider.bagit.BagItWriter.PERCENT_ENCODED;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Reads BagIt metadata - bag declaration ({@code bagit.txt}), manifests, and bag metadata ({@code bag-info.txt}) - well
@@ -78,15 +78,15 @@ public class BagItReader {
         }
         LinkedHashMap<String, List<String>> entriesAndValues = parseLines(lines);
         return entriesAndValues
-                .entrySet()
-                .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                        entry -> entry.getValue().get(0),
-                        (entry1, entry2) -> {
-                            // merge function should never be invoked
-                            throw new RuntimeException("Duplicate label: " + entry1);
-                            },
-                        LinkedHashMap::new));
+            .entrySet()
+            .stream()
+            .collect(Collectors.toMap(Map.Entry::getKey,
+                                      entry -> entry.getValue().get(0),
+                                      (entry1, entry2) -> {
+                                          // merge function should never be invoked
+                                          throw new RuntimeException("Duplicate label: " + entry1);
+                                      },
+                                      LinkedHashMap::new));
     }
 
     /**
@@ -127,15 +127,15 @@ public class BagItReader {
         }
 
         return lines.stream()
-                .filter(line -> line.contains(LABEL_SEP_SPACE) || line.contains(LABEL_SEP_TAB))
-                .map(line -> {
-                    if (line.contains(LABEL_SEP_SPACE)) {
-                        return line.substring(0, line.indexOf(LABEL_SEP_SPACE));
-                    }
+                    .filter(line -> line.contains(LABEL_SEP_SPACE) || line.contains(LABEL_SEP_TAB))
+                    .map(line -> {
+                        if (line.contains(LABEL_SEP_SPACE)) {
+                            return line.substring(0, line.indexOf(LABEL_SEP_SPACE));
+                        }
 
-                    return line.substring(0, line.indexOf(LABEL_SEP_TAB));
-                })
-                .collect(Collectors.toList());
+                        return line.substring(0, line.indexOf(LABEL_SEP_TAB));
+                    })
+                    .collect(Collectors.toList());
     }
 
     /**
@@ -175,77 +175,76 @@ public class BagItReader {
             }
         };
 
-
         Stream.of(LF_ENCODED, CR_ENCODED, PERCENT_ENCODED)
-                .forEach(encodedToken -> {
+              .forEach(encodedToken -> {
 
-                    // Offset into the encodedPath where we start searching for an encoded token
-                    int offset = 0;
+                  // Offset into the encodedPath where we start searching for an encoded token
+                  int offset = 0;
 
-                    // Offset into the encodedPath where an encoded token was found
-                    int index = -1;
+                  // Offset into the encodedPath where an encoded token was found
+                  int index = -1;
 
-                    // Offset into the decodedPath StringBuilder where a replacement should start
-                    int replacementOffset = 0;
+                  // Offset into the decodedPath StringBuilder where a replacement should start
+                  int replacementOffset = 0;
 
-                    while ((index = encodedPath.indexOf(encodedToken, offset)) > -1) {
-                        // note the replacementOffset will be negative, so we add the index and the replacementOffset.
-                        decodedPath.replace((index + replacementOffset),
-                                (index + replacementOffset) + encodedToken.length(), DECODE_MAP.get(encodedToken));
-                        replacementOffset = replacementOffset -
-                                (encodedToken.length() - DECODE_MAP.get(encodedToken).length());
-                        offset = index + encodedToken.length();
-                    }
+                  while ((index = encodedPath.indexOf(encodedToken, offset)) > -1) {
+                      // note the replacementOffset will be negative, so we add the index and the replacementOffset.
+                      decodedPath.replace((index + replacementOffset),
+                                          (index + replacementOffset) + encodedToken.length(),
+                                          DECODE_MAP.get(encodedToken));
+                      replacementOffset = replacementOffset -
+                                          (encodedToken.length() - DECODE_MAP.get(encodedToken).length());
+                      offset = index + encodedToken.length();
+                  }
 
-                    // the encodedPath and the decodedPath need to have the same state prior to entering the
-                    // search/replace while loop
-                    encodedPath.setLength(decodedPath.length());
-                    for (int i = 0; i < decodedPath.length(); i++) {
-                        encodedPath.setCharAt(i, decodedPath.charAt(i));
-                    }
-                });
+                  // the encodedPath and the decodedPath need to have the same state prior to entering the
+                  // search/replace while loop
+                  encodedPath.setLength(decodedPath.length());
+                  for (int i = 0; i < decodedPath.length(); i++) {
+                      encodedPath.setCharAt(i, decodedPath.charAt(i));
+                  }
+              });
 
         return decodedPath.toString();
     }
 
     private LinkedHashMap<String, List<String>> parseLines(List<String> lines) {
         return lines.stream()
-                .filter(line -> line.contains(LABEL_SEP_SPACE) || line.contains(LABEL_SEP_TAB))
-                .collect(Collectors.toMap(line -> {
-                    if (line.contains(LABEL_SEP_SPACE)) {
-                        return line.substring(0, line.indexOf(LABEL_SEP_SPACE));
-                    }
+                    .filter(line -> line.contains(LABEL_SEP_SPACE) || line.contains(LABEL_SEP_TAB))
+                    .collect(Collectors.toMap(line -> {
+                        if (line.contains(LABEL_SEP_SPACE)) {
+                            return line.substring(0, line.indexOf(LABEL_SEP_SPACE));
+                        }
 
-                    return line.substring(0, line.indexOf(LABEL_SEP_TAB));
-                }, line -> {
-                    String value;
-                    if (line.contains(LABEL_SEP_SPACE)) {
-                        value = line.substring(line.indexOf(LABEL_SEP_SPACE) + LABEL_SEP_SPACE.length());
-                    } else {
-                        value = line.substring(line.indexOf(LABEL_SEP_TAB) + LABEL_SEP_TAB.length());
-                    }
-                    ArrayList<String> list = new ArrayList(1);
-                    list.add(value);
-                    return list;
-                }, (value1, value2) -> {
-                    value1.addAll(value2);
-                    return value1;
-                }, LinkedHashMap::new));
+                        return line.substring(0, line.indexOf(LABEL_SEP_TAB));
+                    }, line -> {
+                        String value;
+                        if (line.contains(LABEL_SEP_SPACE)) {
+                            value = line.substring(line.indexOf(LABEL_SEP_SPACE) + LABEL_SEP_SPACE.length());
+                        } else {
+                            value = line.substring(line.indexOf(LABEL_SEP_TAB) + LABEL_SEP_TAB.length());
+                        }
+                        ArrayList<String> list = new ArrayList(1);
+                        list.add(value);
+                        return list;
+                    }, (value1, value2) -> {
+                        value1.addAll(value2);
+                        return value1;
+                    }, LinkedHashMap::new));
     }
 
     private LinkedHashMap<String, String> parseManifestLines(List<String> lines) {
         return lines.stream()
-                .filter(line -> line.contains(SEP_SPACE) || line.contains(SEP_TAB))
-                .collect(Collectors.toMap(line -> {
-                    String[] result = line.split("\\h");
-                    return decodePath(result[result.length - 1]);
-                }, line -> {
-                    return line.split("\\h")[0];
-                }, (value1, value2) -> {
-                    // merge function should never be invoked, as each line should have a unique path
-                    throw new RuntimeException("Duplicate file path in manifest: " + value1);
-                }, LinkedHashMap::new));
+                    .filter(line -> line.contains(SEP_SPACE) || line.contains(SEP_TAB))
+                    .collect(Collectors.toMap(line -> {
+                        String[] result = line.split("\\h");
+                        return decodePath(result[result.length - 1]);
+                    }, line -> {
+                        return line.split("\\h")[0];
+                    }, (value1, value2) -> {
+                        // merge function should never be invoked, as each line should have a unique path
+                        throw new RuntimeException("Duplicate file path in manifest: " + value1);
+                    }, LinkedHashMap::new));
     }
-
 
 }

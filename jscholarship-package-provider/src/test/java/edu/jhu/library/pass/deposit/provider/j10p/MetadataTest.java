@@ -16,15 +16,6 @@
 
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import org.dataconservancy.pass.deposit.builder.fs.FilesystemModelBuilder;
-import org.dataconservancy.pass.deposit.model.DepositSubmission;
-import org.junit.Before;
-import org.junit.Test;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.net.URI;
-
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCTERMS_NS;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCT_BIBLIOCITATION;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DC_CONTRIBUTOR;
@@ -35,6 +26,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static submissions.SubmissionResourceUtil.lookupStream;
+
+import java.net.URI;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.dataconservancy.pass.deposit.builder.fs.FilesystemModelBuilder;
+import org.dataconservancy.pass.deposit.model.DepositSubmission;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Element;
 
 /**
  * Tests the transport of metadata from a Submission Fedora resource through the
@@ -79,9 +79,8 @@ public class MetadataTest {
         // In citation, list up to three authors.  Take publication date from "common" if not in "crossref".
         assertNotNull(qdc.getElementsByTagNameNS(DCTERMS_NS, DCT_BIBLIOCITATION).item(0).getTextContent());
         assertEquals("Christine Cagney, Mary Beth Lacey. (Fall 2016). \"My Test Article.\" Nature Communications.",
-                qdc.getElementsByTagNameNS(DCTERMS_NS, DCT_BIBLIOCITATION).item(0).getTextContent());
+                     qdc.getElementsByTagNameNS(DCTERMS_NS, DCT_BIBLIOCITATION).item(0).getTextContent());
     }
-
 
     @Test
     public void crossrefAndManyAuthors() throws Exception {
@@ -93,7 +92,9 @@ public class MetadataTest {
         // In citation, use "et al" for more than three authors.
         // Publication date in "crossref" has precedence over one in "common".
         assertNotNull(qdc.getElementsByTagNameNS(DCTERMS_NS, DCT_BIBLIOCITATION).item(0).getTextContent());
-        assertEquals("Christine Cagney, Mary Beth Lacey, David Michael Starsky, et al. (Fall 2016). \"My Test Article.\" Nature Communications.",
-                qdc.getElementsByTagNameNS(DCTERMS_NS, DCT_BIBLIOCITATION).item(0).getTextContent());
+        assertEquals(
+            "Christine Cagney, Mary Beth Lacey, David Michael Starsky, et al. (Fall 2016). \"My Test Article.\" " +
+            "Nature Communications.",
+            qdc.getElementsByTagNameNS(DCTERMS_NS, DCT_BIBLIOCITATION).item(0).getTextContent());
     }
 }

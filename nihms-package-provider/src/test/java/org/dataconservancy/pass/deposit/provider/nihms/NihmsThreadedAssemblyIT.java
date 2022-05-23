@@ -15,16 +15,16 @@
  */
 package org.dataconservancy.pass.deposit.provider.nihms;
 
-import org.dataconservancy.pass.deposit.assembler.PackageOptions;
-import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
-import org.dataconservancy.pass.deposit.assembler.shared.PackageVerifier;
-import org.dataconservancy.pass.deposit.assembler.shared.ThreadedAssemblyIT;
+import static java.util.Collections.singletonList;
+import static org.dataconservancy.pass.deposit.provider.nihms.NihmsAssembler.SPEC_NIHMS_NATIVE_2017_07;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Collections.singletonList;
-import static org.dataconservancy.pass.deposit.provider.nihms.NihmsAssembler.SPEC_NIHMS_NATIVE_2017_07;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions;
+import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
+import org.dataconservancy.pass.deposit.assembler.shared.PackageVerifier;
+import org.dataconservancy.pass.deposit.assembler.shared.ThreadedAssemblyIT;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)

@@ -15,42 +15,6 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import au.edu.apsr.mtk.base.AmdSec;
-import au.edu.apsr.mtk.base.Constants;
-import au.edu.apsr.mtk.base.Div;
-import au.edu.apsr.mtk.base.DmdSec;
-import au.edu.apsr.mtk.base.FLocat;
-import au.edu.apsr.mtk.base.File;
-import au.edu.apsr.mtk.base.FileGrp;
-import au.edu.apsr.mtk.base.FileSec;
-import au.edu.apsr.mtk.base.Fptr;
-import au.edu.apsr.mtk.base.METS;
-import au.edu.apsr.mtk.base.METSException;
-import au.edu.apsr.mtk.base.METSWrapper;
-import au.edu.apsr.mtk.base.MdSec;
-import au.edu.apsr.mtk.base.MdWrap;
-import au.edu.apsr.mtk.base.SourceMD;
-import au.edu.apsr.mtk.base.StructMap;
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
-import org.dataconservancy.pass.deposit.model.DepositMetadata;
-import org.dataconservancy.pass.deposit.model.DepositSubmission;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.OutputStream;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import static edu.jhu.library.pass.deposit.provider.j10p.MetsMdType.DC;
 import static edu.jhu.library.pass.deposit.provider.j10p.MetsMdType.OTHER;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DCTERMS_NS;
@@ -78,6 +42,42 @@ import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.DIM_QUALIF
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.NS_TO_PREFIX_MAP;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XSI_NS;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.XSI_NS_PREFIX;
+
+import java.io.OutputStream;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import au.edu.apsr.mtk.base.AmdSec;
+import au.edu.apsr.mtk.base.Constants;
+import au.edu.apsr.mtk.base.Div;
+import au.edu.apsr.mtk.base.DmdSec;
+import au.edu.apsr.mtk.base.FLocat;
+import au.edu.apsr.mtk.base.File;
+import au.edu.apsr.mtk.base.FileGrp;
+import au.edu.apsr.mtk.base.FileSec;
+import au.edu.apsr.mtk.base.Fptr;
+import au.edu.apsr.mtk.base.METS;
+import au.edu.apsr.mtk.base.METSException;
+import au.edu.apsr.mtk.base.METSWrapper;
+import au.edu.apsr.mtk.base.MdSec;
+import au.edu.apsr.mtk.base.MdWrap;
+import au.edu.apsr.mtk.base.SourceMD;
+import au.edu.apsr.mtk.base.StructMap;
+import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import org.dataconservancy.pass.deposit.model.DepositMetadata;
+import org.dataconservancy.pass.deposit.model.DepositSubmission;
+import org.w3c.dom.Comment;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -136,7 +136,8 @@ public class DspaceMetadataDomWriter {
         try {
             if (getFileGrpByUse(CONTENT_USE) == null || getFileGrpByUse(CONTENT_USE).getFiles().isEmpty()) {
                 throw new IllegalStateException("No <fileGrp USE=\"" + CONTENT_USE + "\"> element was found, or was" +
-                        " empty.  Resources must be added before submissions.  Has addResource(Resource) been called?");
+                                                " empty.  Resources must be added before submissions.  Has " +
+                                                "addResource(Resource) been called?");
             }
         } catch (METSException e) {
             throw new RuntimeException(e.getMessage(), e);
@@ -172,25 +173,25 @@ public class DspaceMetadataDomWriter {
         Div finalItemDiv = itemDiv;
         try {
             fileSec.getFileGrpByUse(CONTENT_USE)
-                    .stream()
-                    .flatMap(fileGrp -> {
-                        try {
-                            return fileGrp.getFiles().stream();
-                        } catch (METSException e) {
-                            throw new RuntimeException(e.getMessage(), e);
-                        }
-                    })
-                    .forEach(f -> {
-                        Fptr filePtr = null;
-                        try {
-                            filePtr = finalItemDiv.newFptr();
-                        } catch (METSException e) {
-                            throw new RuntimeException(e.getMessage(), e);
-                        }
-                        filePtr.setID(mintId());
-                        filePtr.setFileID(f.getID());
-                        finalItemDiv.addFptr(filePtr);
-                    });
+                   .stream()
+                   .flatMap(fileGrp -> {
+                       try {
+                           return fileGrp.getFiles().stream();
+                       } catch (METSException e) {
+                           throw new RuntimeException(e.getMessage(), e);
+                       }
+                   })
+                   .forEach(f -> {
+                       Fptr filePtr = null;
+                       try {
+                           filePtr = finalItemDiv.newFptr();
+                       } catch (METSException e) {
+                           throw new RuntimeException(e.getMessage(), e);
+                       }
+                       filePtr.setID(mintId());
+                       filePtr.setFileID(f.getID());
+                       finalItemDiv.addFptr(filePtr);
+                   });
         } catch (METSException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
@@ -256,13 +257,11 @@ public class DspaceMetadataDomWriter {
         dc.description.provenance: Submission published under an embargo, which will last until yyyy-MM-dd
          */
 
-
         ZonedDateTime embargoLiftDate = submission.getMetadata().getArticleMetadata().getEmbargoLiftDate();
         if (embargoLiftDate == null) {
             throw new NullPointerException("Embargo lift date should not be null.");
         }
         String formattedDate = embargoLiftDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
-
 
         // <dim:field mdschema="local" element="embargo" qualifier="terms">
         Element localEmbargoTerms = dimDocument.createElementNS(DIM_NS, asQname(DIM_NS, DIM_FIELD));
@@ -284,7 +283,7 @@ public class DspaceMetadataDomWriter {
         dcDescProv.setAttribute(DIM_ELEMENT, DIM_DESCRIPTION);
         dcDescProv.setAttribute(DIM_QUALIFIER, DIM_PROVENANCE);
         dcDescProv.setTextContent(String.format("Submission published under an embargo, which will last until %s",
-                formattedDate));
+                                                formattedDate));
 
         dimRoot.appendChild(localEmbargoLift);
         dimRoot.appendChild(localEmbargoTerms);
@@ -306,6 +305,7 @@ public class DspaceMetadataDomWriter {
      * <p>
      * Package-private for unit testing
      * </p>
+     *
      * @param submission
      * @return
      */
@@ -342,7 +342,9 @@ public class DspaceMetadataDomWriter {
 
         // Attach a <dcterms:hasVersion> pointing to the published Article DOI
         if (articleMd.getDoi() != null) {
-            Comment c = dcDocument.createComment("This DOI points to the published version of the manuscript, available after any embargo period has been satisfied.");
+            Comment c = dcDocument.createComment(
+                "This DOI points to the published version of the manuscript, available after any embargo period has " +
+                "been satisfied.");
             record.appendChild(c);
             Element hasVersion = dcDocument.createElementNS(DCTERMS_NS, asQname(DCTERMS_NS, DCT_HASVERSION));
             hasVersion.setTextContent(articleMd.getDoi().toString());
@@ -356,10 +358,10 @@ public class DspaceMetadataDomWriter {
             record.appendChild(msAbstractElement);
         }
 
-        // TODO: Journal metadata
+        // todo: Journal metadata
         // ...
 
-        // TODO: Article metadata
+        // todo: Article metadata
         // <dc:identifier> DOI for the published article
         // <dc:available> date available if there is an embargo on the published article
 
@@ -367,8 +369,9 @@ public class DspaceMetadataDomWriter {
         // "Submission published under an embargo, which will last until yyyy-MM-dd"
         if (articleMd.getEmbargoLiftDate() != null) {
             Element dcEmbargoDesc = dcDocument.createElementNS(DC_NS, asQname(DC_NS, DC_DESCRIPTION));
-            dcEmbargoDesc.setTextContent(String.format("Submission published under an embargo, which will last until %s",
-                    articleMd.getEmbargoLiftDate().format(DateTimeFormatter.ISO_LOCAL_DATE)));
+            dcEmbargoDesc.setTextContent(
+                String.format("Submission published under an embargo, which will last until %s",
+                              articleMd.getEmbargoLiftDate().format(DateTimeFormatter.ISO_LOCAL_DATE)));
             record.appendChild(dcEmbargoDesc);
         }
 
@@ -390,6 +393,7 @@ public class DspaceMetadataDomWriter {
      * <p>
      * Package-private for unit testing
      * </p>
+     *
      * @param submission
      * @return
      */
@@ -397,7 +401,7 @@ public class DspaceMetadataDomWriter {
         Document dcDocument = newDocument();
 
         // Root <record> element
-        // TODO - What is the correct qualified name for DCMES data?
+        // todo: What is the correct qualified name for DCMES data?
         Element record = newRootElement(dcDocument, DC_NS, "qualifieddc");
 
         dcDocument.appendChild(record);
@@ -447,41 +451,49 @@ public class DspaceMetadataDomWriter {
             if (p.getType() == DepositMetadata.PERSON_TYPE.author) {
                 // Citation: For author 0, add name.  For authorIndex 1 and 2, add comma then name.
                 // For author 3, add comma and "et al".  For later authorIndex, do nothing.
-                if (authorIndex == 0)
+                if (authorIndex == 0) {
                     citationBldr.append(p.getReversedName());
-                else if (authorIndex <= 2)
+                } else if (authorIndex <= 2) {
                     citationBldr.append(", " + p.getReversedName());
-                else if (authorIndex == 3)
+                } else if (authorIndex == 3) {
                     citationBldr.append(", et al");
+                }
                 authorIndex++;
             }
         });
-        if (authorIndex == 0)
+        if (authorIndex == 0) {
             throw new RuntimeException("No authors found in the manuscript metadata!");
+        }
         // Add period at end of author list in citation
         citationBldr.append(".");
 
         // Attach a <dc:identifier:citation> if not empty
         // publication date - after a single space, in parens, followed by "."
-        if (journalMd != null && journalMd.getPublicationDate() != null && ! journalMd.getPublicationDate().isEmpty())
+        if (journalMd != null && journalMd.getPublicationDate() != null && !journalMd.getPublicationDate().isEmpty()) {
             citationBldr.append(" (" + journalMd.getPublicationDate() + ").");
+        }
         // article title - after single space, in double quotes with "." inside
-        if (articleMd != null && articleMd.getTitle() != null && ! articleMd.getTitle().isEmpty())
+        if (articleMd != null && articleMd.getTitle() != null && !articleMd.getTitle().isEmpty()) {
             citationBldr.append(" \"" + articleMd.getTitle() + ".\"");
+        }
         // journal title - after single space, followed by "."
-        if (journalMd != null && journalMd.getJournalTitle() != null && ! journalMd.getJournalTitle().isEmpty())
+        if (journalMd != null && journalMd.getJournalTitle() != null && !journalMd.getJournalTitle().isEmpty()) {
             citationBldr.append(" " + journalMd.getJournalTitle() + ".");
+        }
         // volume - after single space
-        if (articleMd != null && articleMd.getVolume() != null && ! articleMd.getVolume().isEmpty())
+        if (articleMd != null && articleMd.getVolume() != null && !articleMd.getVolume().isEmpty()) {
             citationBldr.append(" " + articleMd.getVolume());
+        }
         // issue - after single space, inside parens, followed by "."
-        if (articleMd != null && articleMd.getIssue() != null && ! articleMd.getIssue().isEmpty())
+        if (articleMd != null && articleMd.getIssue() != null && !articleMd.getIssue().isEmpty()) {
             citationBldr.append(" (" + articleMd.getIssue() + ").");
+        }
         // DOI - after single space, followed by "."
-        if (articleMd != null && articleMd.getDoi() != null)
+        if (articleMd != null && articleMd.getDoi() != null) {
             citationBldr.append(" " + articleMd.getDoi().toString() + ".");
+        }
 
-        if (! citationBldr.toString().isEmpty()) {
+        if (!citationBldr.toString().isEmpty()) {
             Element citation = dcDocument.createElementNS(DCTERMS_NS, asQname(DCTERMS_NS, DCT_BIBLIOCITATION));
             citation.setTextContent(citationBldr.toString());
             record.appendChild(citation);
@@ -546,17 +558,18 @@ public class DspaceMetadataDomWriter {
         Element root = doc.createElementNS(namespace, qualifiedName);
         root.setAttribute("xmlns:" + XSI_NS_PREFIX, XSI_NS);
         NS_TO_PREFIX_MAP.keySet().stream().collect(Collectors.toMap(NS_TO_PREFIX_MAP::get, (key) -> key)).entrySet()
-                .stream().filter((entry) -> {
-            // filter out the namespace prefix supplied by the qualifiedName parameter, as the writer will add that
-            // prefix in automatically
-            if (qualifiedName.contains(":")) {
-                String prefix = qualifiedName.substring(0, qualifiedName.indexOf(":"));
-                if (prefix.equals(entry.getKey())) {
-                    return false;
-                }
-            }
-            return true;
-        }).forEach((entry) -> root.setAttribute("xmlns:" + entry.getKey(), entry.getValue()));
+                        .stream().filter((entry) -> {
+                            // filter out the namespace prefix supplied by the qualifiedName parameter, as the writer
+                            // will add that
+                            // prefix in automatically
+                            if (qualifiedName.contains(":")) {
+                                String prefix = qualifiedName.substring(0, qualifiedName.indexOf(":"));
+                                if (prefix.equals(entry.getKey())) {
+                                    return false;
+                                }
+                            }
+                            return true;
+                        }).forEach((entry) -> root.setAttribute("xmlns:" + entry.getKey(), entry.getValue()));
         return root;
     }
 
@@ -649,10 +662,10 @@ public class DspaceMetadataDomWriter {
         }
 
         Optional<AmdSec> amdSec = mets
-                .getAmdSecs()
-                .stream()
-                .filter(candidateAmdSec -> candidateAmdSec.getSourceMD(id) != null)
-                .findAny();
+            .getAmdSecs()
+            .stream()
+            .filter(candidateAmdSec -> candidateAmdSec.getSourceMD(id) != null)
+            .findAny();
 
         if (amdSec.isPresent()) {
             return amdSec.get().getSourceMD(id);
@@ -729,7 +742,7 @@ public class DspaceMetadataDomWriter {
      * Returns the qualified form of {@code elementName} after mapping the {@code namespace} to a prefix.
      * if {@code elementName} is already in a qualified form (e.g. contains a {@code :}), it is return unmodified.
      *
-     * @param namespace the namespace for {@code elementName}
+     * @param namespace   the namespace for {@code elementName}
      * @param elementName the element name, which may already be qualified
      * @return the qualified name for {@code elementName}
      * @throws IllegalStateException if a {@code namespace} for which there is no prefix mapping is encountered

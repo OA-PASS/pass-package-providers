@@ -15,12 +15,12 @@
  */
 package org.dataconservancy.pass.deposit.provider.nihms;
 
-import org.dataconservancy.pass.deposit.model.DepositFileType;
-import org.junit.Test;
-
 import static org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider.getNonCollidingFilename;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import org.dataconservancy.pass.deposit.model.DepositFileType;
+import org.junit.Test;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -29,7 +29,8 @@ public class NihmsPackageProviderTest {
 
     @Test
     public void nonCollidingFilename() throws Exception {
-        String nameIn, nameOut;
+        String nameIn;
+        String nameOut;
 
         nameIn = "test.txt";
         nameOut = getNonCollidingFilename(nameIn, DepositFileType.supplement);

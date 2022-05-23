@@ -15,9 +15,14 @@
  */
 package edu.jhu.library.pass.deposit.provider.integration;
 
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import edu.jhu.library.pass.deposit.provider.bagit.BagItPackageProvider;
 import edu.jhu.library.pass.deposit.provider.bagit.BagItPackageVerifier;
 import edu.jhu.library.pass.deposit.provider.j10p.DspaceMetsPackageVerifier;
 import org.dataconservancy.pass.deposit.assembler.PackageOptions;
@@ -28,18 +33,9 @@ import org.dataconservancy.pass.deposit.model.DepositSubmission;
 import org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageVerifier;
 import org.dataconservancy.pass.model.Repository;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.fail;
 
 /**
  * Verifies packages created by the DSpace and NIHMS assemblers.
@@ -67,15 +63,15 @@ public class ValidateDspaceAndNihmsProvidersIT extends SubmitAndValidatePackages
 
     private static final Logger LOG = LoggerFactory.getLogger(ValidateDspaceAndNihmsProvidersIT.class);
 
-    // Meta TODO: review below TODOs for accuracy/need
+    // Meta todo: review below todos for accuracy/need
 
-    // TODO: Submit to NIHMS Repository using Filesystem Transport and verify package
+    // todo: Submit to NIHMS Repository using Filesystem Transport and verify package
 
-    // TODO: Submit to J10P Repository using Filesystem Transport and verify package
+    // todo: Submit to J10P Repository using Filesystem Transport and verify package
 
-    // TODO: Submit to J10P Repository using SWORD Transport and verify logical success (separate IT)
+    // todo: Submit to J10P Repository using SWORD Transport and verify logical success (separate IT)
 
-    // TODO: Submit to NIHMS Repository using FTP Transport and verify logical success (separate IT)
+    // todo: Submit to NIHMS Repository using FTP Transport and verify logical success (separate IT)
 
     private DspaceMetsPackageVerifier dspaceVerifier;
 
@@ -95,11 +91,11 @@ public class ValidateDspaceAndNihmsProvidersIT extends SubmitAndValidatePackages
         bagitVerifier = new BagItPackageVerifier();
 
         Set<String> existingRepos = passClient
-                .findAllByAttribute(Repository.class, "repositoryKey", "*")
-                .stream()
-                .map(uri -> passClient.readResource(uri, Repository.class))
-                .map(Repository::getRepositoryKey)
-                .collect(Collectors.toSet());
+            .findAllByAttribute(Repository.class, "repositoryKey", "*")
+            .stream()
+            .map(uri -> passClient.readResource(uri, Repository.class))
+            .map(Repository::getRepositoryKey)
+            .collect(Collectors.toSet());
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode node = mapper.readTree(this.getClass().getResourceAsStream("/repositories.json"));
@@ -122,7 +118,7 @@ public class ValidateDspaceAndNihmsProvidersIT extends SubmitAndValidatePackages
      * configuration of Deposit Services places NIH/PMC packages in one directory, and DSpace packages in another.
      *
      * @param depositSubmission {@inheritDoc}
-     * @param explodedPackage {@inheritDoc}
+     * @param explodedPackage   {@inheritDoc}
      * @return {@inheritDoc}
      */
     @Override

@@ -27,6 +27,9 @@ package edu.jhu.library.pass.deposit.provider.bagit;
  */
 public class BagMetadata {
 
+    private BagMetadata() {
+    }
+
     /**
      * Identifies the BagIt major (M) and minor (N) version numbers
      */

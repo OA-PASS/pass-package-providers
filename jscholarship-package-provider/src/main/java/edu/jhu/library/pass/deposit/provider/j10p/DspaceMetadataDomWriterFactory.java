@@ -15,10 +15,10 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)

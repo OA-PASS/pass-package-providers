@@ -15,6 +15,20 @@
  */
 package edu.jhu.library.pass.deposit.provider.bagit;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.commons.io.IOUtils.toInputStream;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.dataconservancy.pass.client.PassClient;
 import org.dataconservancy.pass.client.PassJsonAdapter;
 import org.dataconservancy.pass.client.adapter.PassJsonAdapterBasic;
@@ -27,22 +41,6 @@ import org.dataconservancy.pass.model.Submission;
 import org.dataconservancy.pass.model.User;
 import org.junit.Before;
 import submissions.SubmissionResourceUtil;
-
-import java.io.IOException;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.commons.io.IOUtils.toInputStream;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -65,41 +63,45 @@ public class BagItThreadedAssemblyIT extends ThreadedAssemblyIT {
 
         Collection<URI> submissionUris = SubmissionResourceUtil.submissionUris();
         this.submissionMap = submissionUris.stream()
-                .peek(uri -> System.err.println("Processing " + uri))
-                .map(SubmissionResourceUtil::asJson)
-                .flatMap(SubmissionResourceUtil::asStream)
-                .filter(node -> node.has("@id") &&
-                        node.has("@type") &&
-                        node.get("@type").asText().equals("Submission"))
-                .collect(Collectors.toMap(node -> URI.create(node.get("@id").asText()),
-                        node -> {
-                            try {
-                                return adapter.toModel(toInputStream(node.toString(), UTF_8), Submission.class);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        }));
+                                           .peek(uri -> System.err.println("Processing " + uri))
+                                           .map(SubmissionResourceUtil::asJson)
+                                           .flatMap(SubmissionResourceUtil::asStream)
+                                           .filter(node -> node.has("@id") &&
+                                                           node.has("@type") &&
+                                                           node.get("@type").asText().equals("Submission"))
+                                           .collect(Collectors.toMap(node -> URI.create(node.get("@id").asText()),
+                                                                     node -> {
+                                                                         try {
+                                                                             return adapter.toModel(
+                                                                                 toInputStream(node.toString(), UTF_8),
+                                                                                 Submission.class);
+                                                                         } catch (Exception e) {
+                                                                             throw new RuntimeException(e);
+                                                                         }
+                                                                     }));
 
         this.userMap = submissionUris.stream()
-                .map(SubmissionResourceUtil::asJson)
-                .flatMap(SubmissionResourceUtil::asStream)
-                .filter(node -> node.has("@id") &&
-                        node.has("@type") && node.get("@type").asText().equals("User"))
-                .collect(Collectors.toMap(node -> URI.create(node.get("@id").asText()),
-                        node -> {
-                            try {
-                                return adapter.toModel(toInputStream(node.toString(), UTF_8), User.class);
-                            } catch (Exception e) {
-                                throw new RuntimeException(e);
-                            }
-                        },
-                        (user1, user2) -> user2));
+                                     .map(SubmissionResourceUtil::asJson)
+                                     .flatMap(SubmissionResourceUtil::asStream)
+                                     .filter(node -> node.has("@id") &&
+                                                     node.has("@type") && node.get("@type").asText().equals("User"))
+                                     .collect(Collectors.toMap(node -> URI.create(node.get("@id").asText()),
+                                                               node -> {
+                                                                   try {
+                                                                       return adapter.toModel(
+                                                                           toInputStream(node.toString(), UTF_8),
+                                                                           User.class);
+                                                                   } catch (Exception e) {
+                                                                       throw new RuntimeException(e);
+                                                                   }
+                                                               },
+                                                               (user1, user2) -> user2));
 
         when(passClient.readResource(any(URI.class), eq(Submission.class)))
-                .then(inv -> submissionMap.get(inv.getArgument(0)));
+            .then(inv -> submissionMap.get(inv.getArgument(0)));
 
         when(passClient.readResource(any(URI.class), eq(User.class)))
-                .then(inv -> userMap.get(inv.getArgument(0)));
+            .then(inv -> userMap.get(inv.getArgument(0)));
     }
 
     @Override

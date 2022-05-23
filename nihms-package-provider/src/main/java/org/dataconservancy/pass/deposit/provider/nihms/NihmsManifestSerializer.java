@@ -16,11 +16,6 @@
 
 package org.dataconservancy.pass.deposit.provider.nihms;
 
-import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
-import org.dataconservancy.pass.deposit.model.DepositFile;
-import org.dataconservancy.pass.deposit.model.DepositFileType;
-import org.dataconservancy.pass.deposit.model.DepositManifest;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
@@ -28,6 +23,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.dataconservancy.pass.deposit.assembler.shared.SizedStream;
+import org.dataconservancy.pass.deposit.model.DepositFile;
+import org.dataconservancy.pass.deposit.model.DepositFileType;
+import org.dataconservancy.pass.deposit.model.DepositManifest;
 
 /**
  * This class is a serializer for NihmsManifest which produces output conforming with the
@@ -53,13 +53,12 @@ public class NihmsManifestSerializer implements StreamingSerializer {
         this.manifest = manifest;
     }
 
-
-    public SizedStream serialize(){
+    public SizedStream serialize() {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(os);
 
         DepositFileLabelMaker labelMaker = new DepositFileLabelMaker();
-        for (DepositFile file : manifest.getFiles() ){
+        for (DepositFile file : manifest.getFiles()) {
             writer.write(file.getType().toString());
             writer.append("\t");
             String label = labelMaker.getTypeUniqueLabel(file.getType(), file.getLabel());
@@ -72,7 +71,7 @@ public class NihmsManifestSerializer implements StreamingSerializer {
             writer.append("\n");
         }
 
-        // FIXME: Hack to include the bulk_meta.xml in the manifest if it wasn't included
+        // fixme: Hack to include the bulk_meta.xml in the manifest if it wasn't included
         if (manifest.getFiles().stream().noneMatch(df -> df.getType() == DepositFileType.bulksub_meta_xml)) {
             includeBulkMetadataInManifest(writer, labelMaker);
         }
@@ -95,11 +94,12 @@ public class NihmsManifestSerializer implements StreamingSerializer {
      *
      * From page 1 of the NIHMS Bulk Submission Specification for Funding Agencies, July 2017
      *
-     *  "{label} is a label to differentiate between files of one {file_type} in the system.
-     *   This field is required for figure, table, and supplement file types.
-     *  {label} is used to identify files sent,such as 2a, 2b, and so on.
-     *  In the case of supplement files, the string supplied here will be used as text for a hyperlink in the PMC manuscript.
-
+     * "{label} is a label to differentiate between files of one {file_type} in the system.
+     * This field is required for figure, table, and supplement file types.
+     * {label} is used to identify files sent,such as 2a, 2b, and so on.
+     * In the case of supplement files, the string supplied here will be used as text for a hyperlink in the PMC
+     * manuscript.
+     *
      * If the label is not required, we make sure that any supplied label has not been used for a file of that type yet.
      *
      * @author jrm@jhu.edu
@@ -110,9 +110,9 @@ public class NihmsManifestSerializer implements StreamingSerializer {
          * The label types required by the NIHMS Bulk Submission Specifications for Funding Agencies, July 2017
          */
         private final DepositFileType[] requiredLabelTypes = {
-                DepositFileType.figure,
-                DepositFileType.table,
-                DepositFileType.supplement
+            DepositFileType.figure,
+            DepositFileType.table,
+            DepositFileType.supplement
         };
 
         private final Set<DepositFileType> requiredTypes = new HashSet<>(Arrays.asList(requiredLabelTypes));
@@ -136,7 +136,7 @@ public class NihmsManifestSerializer implements StreamingSerializer {
          * Return a unique label for a {@code DepositFile}. If the label is not required, we make sure that any
          * supplied label has not been used for a file of that type yet.
          *
-         * @param type the {@code DepositFileType} of the {@code DepositFile} requesting a label
+         * @param type        the {@code DepositFileType} of the {@code DepositFile} requesting a label
          * @param description the user-supplied description of the file
          * @return the type-unique file label if supplied or required
          */

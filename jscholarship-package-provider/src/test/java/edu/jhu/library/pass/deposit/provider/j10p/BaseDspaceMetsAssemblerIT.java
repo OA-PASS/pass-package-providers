@@ -15,29 +15,6 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Archive;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Compression;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Spec;
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
-import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
-import org.dataconservancy.pass.deposit.assembler.shared.BaseAssemblerIT;
-import org.dataconservancy.pass.deposit.assembler.shared.ExceptionHandlingThreadPoolExecutor;
-import org.dataconservancy.pass.deposit.model.DepositFile;
-import org.junit.Before;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.File;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import static edu.jhu.library.pass.deposit.provider.j10p.DspaceMetsAssembler.SPEC_DSPACE_METS;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_FLOCAT;
 import static edu.jhu.library.pass.deposit.provider.j10p.XMLConstants.METS_NS;
@@ -47,6 +24,26 @@ import static org.apache.tika.mime.MediaType.APPLICATION_ZIP;
 import static org.dataconservancy.pass.deposit.DepositTestUtil.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Archive;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Compression;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Spec;
+import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
+import org.dataconservancy.pass.deposit.assembler.shared.BaseAssemblerIT;
+import org.dataconservancy.pass.deposit.model.DepositFile;
+import org.junit.Before;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -79,9 +76,9 @@ public class BaseDspaceMetsAssemblerIT extends BaseAssemblerIT {
     @Override
     protected DspaceMetsAssembler assemblerUnderTest() {
         DspaceMetadataDomWriterFactory domWriterFactory =
-                new DspaceMetadataDomWriterFactory(DocumentBuilderFactory.newInstance());
+            new DspaceMetadataDomWriterFactory(DocumentBuilderFactory.newInstance());
         DspaceMetsPackageProviderFactory packageProviderFactory =
-                new DspaceMetsPackageProviderFactory(domWriterFactory);
+            new DspaceMetsPackageProviderFactory(domWriterFactory);
         return new DspaceMetsAssembler(mbf, rbf, packageProviderFactory);
     }
 
@@ -95,7 +92,7 @@ public class BaseDspaceMetsAssemblerIT extends BaseAssemblerIT {
     }
 
     protected static void verifyPackageStructure(Document metsDoc, File extractedPackageDir, List<DepositFile>
-            custodialResources) {
+        custodialResources) {
 
         // expect a file for every resource under data/ directory
         // expect a mets xml file at the base directory
@@ -108,12 +105,12 @@ public class BaseDspaceMetsAssemblerIT extends BaseAssemblerIT {
         // existence.
 
         List<String> sanitizedFileNames = custodialResources.stream()
-                .map(DepositFile::getName)
-                .map(AbstractAssembler::sanitizeFilename)
-                .collect(Collectors.toList());
+                                                            .map(DepositFile::getName)
+                                                            .map(AbstractAssembler::sanitizeFilename)
+                                                            .collect(Collectors.toList());
 
         sanitizedFileNames.forEach(sanitizedFileName -> {
-                    assertTrue(extractedPackageDir.toPath().resolve("data/" + sanitizedFileName).toFile().exists());
+            assertTrue(extractedPackageDir.toPath().resolve("data/" + sanitizedFileName).toFile().exists());
         });
 
         // Each custodial resource in the package has a File and Fptr in METS.xml, pointing to the correct location.
@@ -147,11 +144,12 @@ public class BaseDspaceMetsAssemblerIT extends BaseAssemblerIT {
 
         List<Element> flocats = asList(metsDoc.getElementsByTagNameNS(METS_NS, METS_FLOCAT));
         List<String> flocatHrefs = flocats.stream()
-                .map(flocat -> flocat.getAttributeNS(XLINK_NS, XLINK_HREF)).collect(Collectors.toList());
+                                          .map(flocat -> flocat.getAttributeNS(XLINK_NS, XLINK_HREF))
+                                          .collect(Collectors.toList());
 
         // each custodial resource has an flocat, and each flocat has a custodial resource
         assertEquals("Expected '" + custodialResources.size() + "' flocat elements in the package metadata",
-                custodialResources.size(), flocats.size());
+                     custodialResources.size(), flocats.size());
 
         sanitizedFileNames.forEach(fileName -> {
             assertTrue(flocatHrefs.contains("data/" + fileName));

@@ -15,27 +15,15 @@
  */
 package org.dataconservancy.pass.deposit.provider.nihms;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.LineIterator;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Archive;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Compression;
-import org.dataconservancy.pass.deposit.assembler.PackageOptions.Spec;
-import org.dataconservancy.pass.deposit.assembler.PackageStream;
-import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
-import org.dataconservancy.pass.deposit.assembler.shared.BaseAssemblerIT;
-import org.dataconservancy.pass.deposit.assembler.shared.ExceptionHandlingThreadPoolExecutor;
-import org.dataconservancy.pass.deposit.model.DepositFile;
-import org.dataconservancy.pass.deposit.model.DepositFileType;
-import org.dataconservancy.pass.deposit.model.DepositMetadata;
-import org.dataconservancy.pass.deposit.model.DepositMetadata.Person;
-import org.dataconservancy.pass.deposit.model.JournalPublicationType;
-import org.junit.Before;
-import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import static org.dataconservancy.pass.deposit.DepositTestUtil.asList;
+import static org.dataconservancy.pass.deposit.provider.nihms.NihmsAssembler.APPLICATION_GZIP;
+import static org.dataconservancy.pass.deposit.provider.nihms.NihmsAssembler.SPEC_NIHMS_NATIVE_2017_07;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,19 +34,28 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-import static org.dataconservancy.pass.deposit.DepositTestUtil.asList;
-import static org.dataconservancy.pass.deposit.provider.nihms.NihmsAssembler.APPLICATION_GZIP;
-import static org.dataconservancy.pass.deposit.provider.nihms.NihmsAssembler.SPEC_NIHMS_NATIVE_2017_07;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.LineIterator;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Archive;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Compression;
+import org.dataconservancy.pass.deposit.assembler.PackageOptions.Spec;
+import org.dataconservancy.pass.deposit.assembler.PackageStream;
+import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
+import org.dataconservancy.pass.deposit.assembler.shared.BaseAssemblerIT;
+import org.dataconservancy.pass.deposit.model.DepositFile;
+import org.dataconservancy.pass.deposit.model.DepositFileType;
+import org.dataconservancy.pass.deposit.model.DepositMetadata;
+import org.dataconservancy.pass.deposit.model.DepositMetadata.Person;
+import org.dataconservancy.pass.deposit.model.JournalPublicationType;
+import org.junit.Before;
+import org.junit.Test;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * Creates a package, then extracts it.  Performs some basic tests on the extracted package.
@@ -90,7 +87,6 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
         };
     }
 
-
     @Test
     public void testSimple() throws Exception {
         assertTrue(extractedPackageDir.exists());
@@ -121,42 +117,54 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
         assertTrue("Missing NIHMS package manifest (expected: " + manifest + ")", manifest.exists());
         assertTrue("Missing NIHMS bulk metadata (expected: " + metadata + ")", metadata.exists());
         assertTrue("Expected Files to be attached to the DepositSubmission!",
-                submission.getFiles().size() > 0);
+                   submission.getFiles().size() > 0);
         assertTrue("Expected exactly 1 manuscript to be attached to the DepositSubmission!",
-                submission.getFiles().stream()
-                        .filter(df -> df.getType() == DepositFileType.manuscript).count() == 1);
+                   submission.getFiles().stream()
+                             .filter(df -> df.getType() == DepositFileType.manuscript).count() == 1);
 
         Map<String, DepositFileType> custodialResourcesTypeMap = custodialResources.stream()
-                .collect(Collectors.toMap(DepositFile::getName, DepositFile::getType));
+                                                                                   .collect(Collectors.toMap(
+                                                                                       DepositFile::getName,
+                                                                                       DepositFile::getType));
 
         // Each custodial resource is present in the package.  The tested filenames need to be remediated, in case
         // a custodial resource uses a reserved file name.
         custodialResources.forEach(custodialResource -> {
-            String filename = org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider.getNonCollidingFilename(custodialResource.getName(),
-                    custodialResource.getType());
+            String filename =
+                org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider.getNonCollidingFilename(
+                custodialResource.getName(),
+                custodialResource.getType());
             assertTrue(extractedPackageDir.toPath().resolve(filename).toFile().exists());
         });
 
         Map<String, File> packageFiles = Arrays.stream(extractedPackageDir.listFiles())
-                .collect(Collectors.toMap((File::getName), Function.identity()));
+                                               .collect(Collectors.toMap((File::getName), Function.identity()));
 
         // Each file in the package is accounted for as a custodial resource or as a metadata file
         // Remediated resources are detected by their file prefix
         packageFiles.keySet().stream()
-                .filter(fileName -> !fileName.equals(manifest.getName()) && !fileName.equals(metadata.getName()))
-                .forEach(fileName -> {
-                    String remediatedFilename = org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider.getNonCollidingFilename(fileName,
+                    .filter(fileName -> !fileName.equals(manifest.getName()) && !fileName.equals(metadata.getName()))
+                    .forEach(fileName -> {
+                        String remediatedFilename =
+                            org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider
+                                .getNonCollidingFilename(
+                            fileName,
                             custodialResourcesTypeMap.get(fileName));
 
-                    if (!remediatedFilename.startsWith(org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider.REMEDIATED_FILE_PREFIX)) {
-                        assertTrue("Missing file from custodial resources: '" + remediatedFilename + "'",
-                                custodialResourcesMap.containsKey(remediatedFilename));
-                    } else {
-                        assertTrue("Missing remediated file from custodial resources: '" + remediatedFilename + "'",
-                                custodialResourcesMap.containsKey(
-                                        remediatedFilename.substring(org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider.REMEDIATED_FILE_PREFIX.length())));
-                    }
-                });
+                        if (!remediatedFilename.startsWith(
+                            org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider
+                                .REMEDIATED_FILE_PREFIX)) {
+                            assertTrue("Missing file from custodial resources: '" + remediatedFilename + "'",
+                                       custodialResourcesMap.containsKey(remediatedFilename));
+                        } else {
+                            assertTrue("Missing remediated file from custodial resources: '" +
+                                       remediatedFilename + "'",
+                                       custodialResourcesMap.containsKey(
+                                           remediatedFilename.substring(
+                                               org.dataconservancy.pass.deposit.provider.nihms.NihmsPackageProvider
+                                                   .REMEDIATED_FILE_PREFIX.length())));
+                        }
+                    });
 
         assertTrue(packageFiles.keySet().contains(manifest.getName()));
         assertTrue(packageFiles.keySet().contains(metadata.getName()));
@@ -178,8 +186,9 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
             entries.add(line);
             new ManifestLine(manifest, line, lineCount++).assertAll();
         }
-        assertEquals("Expected one line per custodial resource plus metadata file in NIHMS manifest file " + manifest,
-                submission.getFiles().size() + 1, lineCount);
+        assertEquals("Expected one line per custodial resource plus metadata file in NIHMS manifest file "
+                     + manifest,
+                     submission.getFiles().size() + 1, lineCount);
 
         //check for compliance with the NIHMS Bulk Submission Specification
         //table, figure and supplement file types must have a label
@@ -191,9 +200,9 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
 
         for (String entry : entries) {
             String[] fields = entry.split("\t");
-            assertFalse (labels.get(fields[0]).contains(fields[1]));
+            assertFalse(labels.get(fields[0]).contains(fields[1]));
             if (fields[0].equals("figure") || fields[0].equals("table") || fields[0].equals("supplement")) {
-                assertTrue(fields[1].length()>0);
+                assertTrue(fields[1].length() > 0);
             }
         }
     }
@@ -228,12 +237,17 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
             return asPerson;
         }).collect(Collectors.toList());
 
-        // Insure that the Person in the metadata matches a Person on the Submission, and that the person is a corresponding pi
+        // Insure that the Person in the metadata matches a Person on the Submission, and that the person is a
+        // corresponding pi
         asPersons.stream().forEach(person -> {
             assertTrue(submission.getMetadata().getPersons().stream().anyMatch(candidate ->
-                    // NIHMS metadata only use first/last/middle names, so never compare against the "full" version
-                    candidate.getConstructedName().equals(person.getName()) &&
-                    candidate.getType() == person.getType()));
+                   // NIHMS metadata only use
+                   // first/last/middle names, so
+                   // never compare against the
+                   // "full" version
+                   candidate.getConstructedName()
+                            .equals(person.getName()) &&
+                   candidate.getType() == person.getType()));
         });
 
         // Assert that the DOI is present in the metadata
@@ -243,7 +257,7 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
         // Assert that the ISSNs are present in the metadata as the <issn> element
         List<Element> issns = asList(root.getElementsByTagName("issn"));
         Map<String, DepositMetadata.IssnPubType> issnPubTypes =
-                submission.getMetadata().getJournalMetadata().getIssnPubTypes();
+            submission.getMetadata().getJournalMetadata().getIssnPubTypes();
         assertEquals(issnPubTypes.size(), issns.size());
         assertTrue(issnPubTypes.size() > 0);
 
@@ -305,7 +319,7 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
 
             try {
                 assertFalse(String.format(ERR, manifestFile, lineNo, "a file type"),
-                        isNullOrEmpty(parts[0]));
+                            isNullOrEmpty(parts[0]));
             } catch (ArrayIndexOutOfBoundsException e) {
                 fail(String.format(ERR, manifestFile, lineNo, "a file type"));
             }
@@ -316,7 +330,7 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
 
             try {
                 assertFalse(String.format(ERR, manifestFile, lineNo, "a file label"),
-                        isNullOrEmpty(parts[1]));
+                            isNullOrEmpty(parts[1]));
             } catch (ArrayIndexOutOfBoundsException e) {
                 fail(String.format(ERR, manifestFile, lineNo, "a file label"));
             }
@@ -327,7 +341,7 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
 
             try {
                 assertFalse(String.format(ERR, manifestFile, lineNo, "a file name"),
-                        isNullOrEmpty(parts[2]));
+                            isNullOrEmpty(parts[2]));
             } catch (ArrayIndexOutOfBoundsException e) {
                 fail(String.format(ERR, manifestFile, lineNo, "a file name"));
             }
@@ -335,9 +349,11 @@ public class NihmsAssemblerIT extends BaseAssemblerIT {
 
         void assertNameIsValid() {
             assertFalse(String.format("File %s, line %s: Name cannot be same as metadata file.", manifestFile, lineNo),
-                    manifestFile.getName() == org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.METADATA_ENTRY_NAME);
+                        manifestFile.getName() ==
+                        org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.METADATA_ENTRY_NAME);
             assertFalse(String.format("File %s, line %s: Name cannot be same as manifest file.", manifestFile, lineNo),
-                    manifestFile.getName() == org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.MANIFEST_ENTRY_NAME);
+                        manifestFile.getName()
+                        == org.dataconservancy.pass.deposit.provider.nihms.NihmsManifestSerializer.MANIFEST_ENTRY_NAME);
         }
     }
 

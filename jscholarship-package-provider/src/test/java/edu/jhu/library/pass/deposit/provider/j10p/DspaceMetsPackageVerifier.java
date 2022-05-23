@@ -15,6 +15,21 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
+import static edu.jhu.library.pass.deposit.provider.j10p.DspaceMetsPackageProvider.METS_XML;
+import static org.apache.commons.io.filefilter.FileFilterUtils.nameFileFilter;
+import static org.apache.commons.io.filefilter.FileFilterUtils.notFileFilter;
+import static org.dataconservancy.pass.deposit.assembler.PackageOptions.Checksum;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import au.edu.apsr.mtk.base.METS;
 import au.edu.apsr.mtk.base.METSException;
 import au.edu.apsr.mtk.base.METSWrapper;
@@ -28,21 +43,6 @@ import org.dataconservancy.pass.deposit.assembler.shared.ExplodedPackage;
 import org.dataconservancy.pass.deposit.assembler.shared.PackageVerifier;
 import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderImpl;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
-
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import static edu.jhu.library.pass.deposit.provider.j10p.DspaceMetsPackageProvider.METS_XML;
-import static org.apache.commons.io.filefilter.FileFilterUtils.nameFileFilter;
-import static org.apache.commons.io.filefilter.FileFilterUtils.notFileFilter;
-import static org.dataconservancy.pass.deposit.assembler.PackageOptions.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
@@ -62,24 +62,25 @@ public class DspaceMetsPackageVerifier implements PackageVerifier {
     @Override
     @SuppressWarnings("unchecked")
     public void verify(DepositSubmission submission, ExplodedPackage explodedPackage, Map<String, Object> options)
-            throws Exception {
+        throws Exception {
         // Verify custodial content is present and accounted for
 
         FileFilter excludeMets = notFileFilter(nameFileFilter(METS_XML, IOCase.SYSTEM));
         verifyCustodialFiles(submission, explodedPackage.getExplodedDir(), excludeMets, (baseDir, custodialFile) -> {
             return submission.getFiles()
-                    .stream()
-                    .filter(df -> df.getName().equals(custodialFile.getName()))
-                    .findAny()
-                    .orElseThrow(() -> new RuntimeException("Unable to map custodial file " + custodialFile +
-                            " to a DepositFile in the submission.  If this file is a supplemental file, " +
-                            "double-check the custodial file filter."));
+                             .stream()
+                             .filter(df -> df.getName().equals(custodialFile.getName()))
+                             .findAny()
+                             .orElseThrow(() -> new RuntimeException("Unable to map custodial file " + custodialFile +
+                                                                     " to a DepositFile in the submission.  If this " +
+                                                                     "file is a supplemental file, " +
+                                                                     "double-check the custodial file filter."));
         });
 
         // Verify supplemental content - in this case, METS.xml and its content
 
         Checksum.OPTS preferredChecksumAlgo = ((List<Checksum.OPTS>) options.getOrDefault(
-                Checksum.KEY, Collections.singletonList(defaultChecksumAlgo))).get(0);
+            Checksum.KEY, Collections.singletonList(defaultChecksumAlgo))).get(0);
 
         File metsXml = new File(explodedPackage.getExplodedDir(), METS_XML);
         assertTrue(metsXml.exists() && metsXml.length() > 0);
@@ -94,7 +95,8 @@ public class DspaceMetsPackageVerifier implements PackageVerifier {
                 metsFileGroup.getFiles().forEach(metsFile -> {
                     File asJavaIoFile = null;
                     try {
-                        asJavaIoFile = new File(explodedPackage.getExplodedDir(), metsFile.getFLocats().get(0).getHref());
+                        asJavaIoFile = new File(explodedPackage.getExplodedDir(),
+                                                metsFile.getFLocats().get(0).getHref());
                     } catch (METSException e) {
                         throw new RuntimeException(e);
                     }
@@ -105,7 +107,7 @@ public class DspaceMetsPackageVerifier implements PackageVerifier {
                     assertEquals(preferredChecksumAlgo.toString(), metsFile.getChecksumType());
                     try {
                         ObservableInputStream obsIn = new ObservableInputStream(
-                                new FileInputStream(asJavaIoFile));
+                            new FileInputStream(asJavaIoFile));
                         ResourceBuilderImpl builder = new ResourceBuilderImpl();
                         obsIn.add(new DigestObserver(builder, preferredChecksumAlgo));
                         IOUtils.copy(obsIn, new NullOutputStream());
@@ -117,7 +119,7 @@ public class DspaceMetsPackageVerifier implements PackageVerifier {
                     // assert size
                     assertEquals(asJavaIoFile.length(), metsFile.getSize());
 
-                    // TODO assert mime type?
+                    // todo: assert mime type?
 
                 });
             } catch (METSException e) {
@@ -125,7 +127,7 @@ public class DspaceMetsPackageVerifier implements PackageVerifier {
             }
         });
 
-        // TODO: validate dmdSec and structMap
+        // todo: validate dmdSec and structMap
         /*
   <dmdSec GROUPID="21bd84fc-5722-400c-8a3f-c8f61d55b827" ID="997f0943-e079-4ce2-bd3c-e3233f7f602a">
     <mdWrap ID="472d554a-80e7-45a4-b2fc-87e9d0e27e8e" MDTYPE="DC">

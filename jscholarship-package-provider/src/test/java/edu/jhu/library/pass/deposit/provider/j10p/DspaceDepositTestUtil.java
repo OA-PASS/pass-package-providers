@@ -15,26 +15,29 @@
  */
 package edu.jhu.library.pass.deposit.provider.j10p;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
+import static org.junit.Assert.assertTrue;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-import static org.junit.Assert.assertTrue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
  */
 class DspaceDepositTestUtil {
+
+    private DspaceDepositTestUtil() {
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(DspaceDepositTestUtil.class);
 
@@ -51,7 +54,7 @@ class DspaceDepositTestUtil {
      * @throws ParserConfigurationException
      */
     static Document writeAndParseResults(DocumentBuilderFactory dbf, DspaceMetadataDomWriter underTest)
-            throws SAXException, IOException, ParserConfigurationException {
+        throws SAXException, IOException, ParserConfigurationException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         underTest.write(out);
         System.err.println(">>> Wrote: \n" + out.toString("UTF-8"));
@@ -69,7 +72,8 @@ class DspaceDepositTestUtil {
      * @throws IOException
      * @throws ParserConfigurationException
      */
-    static Document getMetsXml(File extractedPackageDir) throws SAXException, IOException, ParserConfigurationException {
+    static Document getMetsXml(File extractedPackageDir)
+        throws SAXException, IOException, ParserConfigurationException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(true);
         return dbf.newDocumentBuilder().parse(Files.newInputStream(extractedPackageDir.toPath().resolve("mets.xml")));

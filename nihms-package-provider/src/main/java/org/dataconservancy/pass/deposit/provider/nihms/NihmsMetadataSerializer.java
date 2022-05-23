@@ -16,6 +16,10 @@
 
 package org.dataconservancy.pass.deposit.provider.nihms;
 
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.List;
+
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -30,10 +34,6 @@ import org.dataconservancy.pass.deposit.model.JournalPublicationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * XML serialization of our NihmsMetadata to conform with the bulk submission dtd
  *
@@ -45,7 +45,7 @@ public class NihmsMetadataSerializer implements StreamingSerializer {
 
     private DepositMetadata metadata;
 
-    public NihmsMetadataSerializer(DepositMetadata metadata){
+    public NihmsMetadataSerializer(DepositMetadata metadata) {
         this.metadata = metadata;
     }
 
@@ -74,15 +74,16 @@ public class NihmsMetadataSerializer implements StreamingSerializer {
             DepositMetadata.Article article = metadata.getArticleMetadata();
             if (manuscript != null) {
                 writer.startNode("manuscript");
-                if(manuscript.getNihmsId() != null) {
+                if (manuscript.getNihmsId() != null) {
                     writer.addAttribute("id", manuscript.getNihmsId());
                 }
 
                 //primitive types
                 writer.addAttribute("publisher_pdf", booleanConvert(manuscript.isPublisherPdf()));
                 writer.addAttribute("show_publisher_pdf", booleanConvert(manuscript.isShowPublisherPdf()));
-                if (metadata.getArticleMetadata() != null && metadata.getArticleMetadata().getEmbargoLiftDate() != null) {
-                    // TODO: resolve the calculation of the embargo offset
+                if (metadata.getArticleMetadata() != null && metadata.getArticleMetadata()
+                                                                     .getEmbargoLiftDate() != null) {
+                    // todo: resolve the calculation of the embargo offset
                 }
 
                 if (manuscript.getManuscriptUrl() != null) {
@@ -153,7 +154,7 @@ public class NihmsMetadataSerializer implements StreamingSerializer {
             List<DepositMetadata.Person> persons = metadata.getPersons();
             if (persons != null && persons.size() > 0) {
                 writer.startNode("contacts");
-                for (DepositMetadata.Person person : persons){
+                for (DepositMetadata.Person person : persons) {
                     // There should be exactly one corresponding PI per deposit.
                     if (person.getType() == DepositMetadata.PERSON_TYPE.submitter) {
                         writer.startNode("person");
@@ -174,7 +175,8 @@ public class NihmsMetadataSerializer implements StreamingSerializer {
                                 String[] split = person.getFullName().split("\\s");
                                 if (split.length > 2) {
                                     // middle name is present
-                                    writer.addAttribute("lname", String.join(" ", Arrays.copyOfRange(split, 2, split.length)));
+                                    writer.addAttribute("lname",
+                                                        String.join(" ", Arrays.copyOfRange(split, 2, split.length)));
                                 } else {
                                     writer.addAttribute("lname", split[1]);
                                 }
@@ -196,19 +198,20 @@ public class NihmsMetadataSerializer implements StreamingSerializer {
             }
         }
 
-        public Object  unmarshal(HierarchicalStreamReader reader,
-                                 UnmarshallingContext context) {
+        public Object unmarshal(HierarchicalStreamReader reader,
+                                UnmarshallingContext context) {
             return null;
         }
     }
 
     /**
      * Method to convert boolean into yes or no
-     * @param  b the boolean to convert
+     *
+     * @param b the boolean to convert
      * @return yes if true, no if false
      */
-    String booleanConvert(boolean b){
-        return(b?"yes":"no");
+    String booleanConvert(boolean b) {
+        return (b ? "yes" : "no");
     }
 
 }

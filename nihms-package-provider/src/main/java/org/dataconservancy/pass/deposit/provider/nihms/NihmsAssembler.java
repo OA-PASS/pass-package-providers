@@ -16,6 +16,15 @@
 
 package org.dataconservancy.pass.deposit.provider.nihms;
 
+import static org.dataconservancy.pass.deposit.assembler.shared.AssemblerSupport.buildMetadata;
+
+import java.net.URI;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.dataconservancy.pass.deposit.assembler.MetadataBuilder;
 import org.dataconservancy.pass.deposit.assembler.PackageStream;
 import org.dataconservancy.pass.deposit.assembler.shared.AbstractAssembler;
@@ -27,15 +36,6 @@ import org.dataconservancy.pass.deposit.assembler.shared.ResourceBuilderFactory;
 import org.dataconservancy.pass.deposit.model.DepositSubmission;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.net.URI;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import static org.dataconservancy.pass.deposit.assembler.shared.AssemblerSupport.buildMetadata;
 
 @Component
 public class NihmsAssembler extends AbstractAssembler {
@@ -89,9 +89,10 @@ public class NihmsAssembler extends AbstractAssembler {
         }
 
         String packageFileName = String.format(PACKAGE_FILE_NAME,
-                SPEC_NIHMS_NATIVE_2017_07,
-                ZonedDateTime.now().format(DateTimeFormatter.ofPattern("uuuu-MM-dd_HH-MM-ss")),
-                submissionUuid);
+                                               SPEC_NIHMS_NATIVE_2017_07,
+                                               ZonedDateTime.now()
+                                                            .format(DateTimeFormatter.ofPattern("uuuu-MM-dd_HH-MM-ss")),
+                                               submissionUuid);
 
         StringBuilder ext = new StringBuilder(packageFileName);
         PackageStream.Metadata md = mb.build();
@@ -103,6 +104,8 @@ public class NihmsAssembler extends AbstractAssembler {
                 case ZIP:
                     ext.append(".").append(Extension.ZIP.getExt());
                     break;
+                default:
+                    break;
             }
         }
 
@@ -113,6 +116,8 @@ public class NihmsAssembler extends AbstractAssembler {
                     break;
                 case GZIP:
                     ext.append(".").append(Extension.GZ.getExt());
+                    break;
+                default:
                     break;
             }
         }

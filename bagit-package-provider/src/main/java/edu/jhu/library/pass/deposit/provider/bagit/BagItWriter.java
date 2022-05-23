@@ -55,41 +55,41 @@ public class BagItWriter {
     public void writeTagLine(OutputStream out, String label, String value) throws IOException {
         validateLabel(label);
         String line = String.format(TAG_LINE, label, value);
-        // TODO format value for lines longer than 79 chars?
+        // todo: format value for lines longer than 79 chars?
         out.write(line.getBytes(charset));
     }
 
     /**
      * Each line of a payload manifest file MUST be of the form
      *
-     *    checksum filepath
+     * checksum filepath
      *
-     *    where _filepath_ is the pathname of a file relative to the base
-     *    directory, and _checksum_ is a hex-encoded checksum calculated by
-     *    applying _algorithm_ over the file.
+     * where _filepath_ is the pathname of a file relative to the base
+     * directory, and _checksum_ is a hex-encoded checksum calculated by
+     * applying _algorithm_ over the file.
      *
-     *    o  The hex-encoded checksum MAY use uppercase and/or lowercase
-     *       letters.
+     * o  The hex-encoded checksum MAY use uppercase and/or lowercase
+     * letters.
      *
-     *    o  The slash character ('/') MUST be used as a path separator in
-     *       _filepath_.
+     * o  The slash character ('/') MUST be used as a path separator in
+     * _filepath_.
      *
-     *    o  One or more linear whitespace characters (spaces or tabs) MUST
-     *       separate _checksum_ from _filepath_.
+     * o  One or more linear whitespace characters (spaces or tabs) MUST
+     * separate _checksum_ from _filepath_.
      *
-     *    o  There is no limitation on the length of a pathname.
+     * o  There is no limitation on the length of a pathname.
      *
-     *    o  The payload manifest MUST NOT reference files outside the payload
-     *       directory.
+     * o  The payload manifest MUST NOT reference files outside the payload
+     * directory.
      *
-     *    o  If a _filepath_ includes a Line Feed (LF), a Carriage Return (CR),
-     *       a Carriage-Return Line Feed (CRLF), or a percent sign (%), those
-     *       characters (and only those) MUST be percent-encoded following
-     *       [RFC3986].
+     * o  If a _filepath_ includes a Line Feed (LF), a Carriage Return (CR),
+     * a Carriage-Return Line Feed (CRLF), or a percent sign (%), those
+     * characters (and only those) MUST be percent-encoded following
+     * [RFC3986].
      *
-     *    A manifest MUST NOT reference directories.  Bag creators who wish to
-     *    create an otherwise empty directory have typically done so by
-     *    creating an empty placeholder file with a name such as ".keep".
+     * A manifest MUST NOT reference directories.  Bag creators who wish to
+     * create an otherwise empty directory have typically done so by
+     * creating an empty placeholder file with a name such as ".keep".
      *
      * @param out
      * @param checksum
@@ -131,18 +131,18 @@ public class BagItWriter {
 
             // Only encode CR and LF if they are not the last character in the line
             if (candidate == CR && i < line.length() - 1) {
-                sb.replace(offset, offset+1, CR_ENCODED);
+                sb.replace(offset, offset + 1, CR_ENCODED);
                 replacementOffset += CR_ENCODED.length() - 1;
             }
 
             if (candidate == LF && i < line.length() - 1) {
-                sb.replace(offset, offset+1, LF_ENCODED);
+                sb.replace(offset, offset + 1, LF_ENCODED);
                 replacementOffset += LF_ENCODED.length() - 1;
             }
 
             // Always encode PERCENT
             if (candidate == PERCENT) {
-                sb.replace(offset, offset+1, PERCENT_ENCODED);
+                sb.replace(offset, offset + 1, PERCENT_ENCODED);
                 replacementOffset += PERCENT_ENCODED.length() - 1;
             }
         }
@@ -170,17 +170,17 @@ public class BagItWriter {
             char candidate = path.charAt(i);
 
             if (candidate == CR) {
-                sb.replace(offset, offset+1, CR_ENCODED);
+                sb.replace(offset, offset + 1, CR_ENCODED);
                 replacementOffset += CR_ENCODED.length() - 1;
             }
 
             if (candidate == LF) {
-                sb.replace(offset, offset+1, LF_ENCODED);
+                sb.replace(offset, offset + 1, LF_ENCODED);
                 replacementOffset += LF_ENCODED.length() - 1;
             }
 
             if (candidate == PERCENT) {
-                sb.replace(offset, offset+1, PERCENT_ENCODED);
+                sb.replace(offset, offset + 1, PERCENT_ENCODED);
                 replacementOffset += PERCENT_ENCODED.length() - 1;
             }
         }
@@ -200,15 +200,15 @@ public class BagItWriter {
         //   colon, CR, LF, or CRLF
         // insure label does not begin or end with whitespace (we check tab and space)
         if (label.charAt(0) == SPACE || label.charAt(0) == TAB ||
-                label.charAt(label.length() - 1) == SPACE || label.charAt(label.length() - 1) == TAB) {
+            label.charAt(label.length() - 1) == SPACE || label.charAt(label.length() - 1) == TAB) {
             throw new RuntimeException("Label must not start or end with whitespace.");
         }
 
         label.chars()
-                .filter(candidate -> candidate == COLON || candidate == LF || candidate == CR)
-                .findAny()
-                .ifPresent(illegalChar -> {
-                    throw new RuntimeException("Illegal character present in label string '" + label + "'");
-                });
+             .filter(candidate -> candidate == COLON || candidate == LF || candidate == CR)
+             .findAny()
+             .ifPresent(illegalChar -> {
+                 throw new RuntimeException("Illegal character present in label string '" + label + "'");
+             });
     }
 }

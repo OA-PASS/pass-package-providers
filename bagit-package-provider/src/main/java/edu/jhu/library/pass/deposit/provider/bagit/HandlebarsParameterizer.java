@@ -15,12 +15,12 @@
  */
 package edu.jhu.library.pass.deposit.provider.bagit;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
 import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * @author Elliot Metsger (emetsger@jhu.edu)
