@@ -22,7 +22,7 @@ jobs:
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.3
         with:
-          maven-version: 3.8.4
+          maven-version: 3.8.1
           
       - name: Run Unit Tests
         run: mvn test --file pom.xml
