@@ -21,7 +21,7 @@ jobs:
     uses: eclipse-pass/pass-package-providers/.github/workflows/tests-unit.yml@main
     needs: call-workaround
     
-#  call-tests-integration:
-#    name: Run Integration Tests
-#    uses: eclipse-pass/pass-package-providers/.github/workflows/tests-integration.yml@main
-#    needs: call-workaround
+  call-tests-integration:
+    name: Run Integration Tests
+    uses: eclipse-pass/pass-package-providers/.github/workflows/tests-integration.yml@main
+    needs: call-workaround
