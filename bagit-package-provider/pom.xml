@@ -93,9 +93,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass</groupId>
+      <groupId>io.github.joergreichert</groupId>
       <artifactId>mets-api</artifactId>
-      <version>${mets-api.version}</version>
     </dependency>
 
     <dependency>
