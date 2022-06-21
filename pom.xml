@@ -458,6 +458,12 @@
         <groupId>io.github.joergreichert</groupId>
         <artifactId>mets-api</artifactId>
         <version>${mets-api.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
     </dependencies>
