@@ -26,8 +26,8 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          key: ${{ runner.os }}-mvn-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-mvn
 
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.3
