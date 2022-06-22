@@ -93,9 +93,13 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass</groupId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.joergreichert</groupId>
       <artifactId>mets-api</artifactId>
-      <version>${mets-api.version}</version>
     </dependency>
 
     <dependency>
