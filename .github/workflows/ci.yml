@@ -29,10 +29,5 @@ jobs:
           key: ${{ runner.os }}-mvn-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-mvn
 
-      - name: Set up Maven
-        uses: stCarolas/setup-maven@v4.3
-        with:
-          maven-version: 3.8.5
-
       - name: "Run unit & integration tests"
         run: mvn verify -V -ntp --file pom.xml
