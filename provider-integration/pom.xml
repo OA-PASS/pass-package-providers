@@ -295,6 +295,12 @@
                         <volume>${project.build.testOutputDirectory}/hosts:/etc/hosts</volume>
                       </bind>
                     </volumes>
+                    <wait>
+                      <http>
+                        <url>http://${pass.elasticsearch.host}:${es.port}/pass/</url>
+                      </http>
+                      <time>120000</time>
+                    </wait>
                   </run>
                 </image>
               </images>
