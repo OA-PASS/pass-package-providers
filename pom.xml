@@ -122,8 +122,8 @@
     <!-- Core version of Deposit Services in use -->
     <deposit-services.version>1.1.0-SNAPSHOT</deposit-services.version>
 
-    <!-- oapass/fcrepo:4.7.5-3.4 -->
-    <docker.fcrepo.version>oapass/fcrepo@sha256:3e39b01edf56c149279cfc51b647df335c01f9ec38036f1724f337ae35d68fe8
+    <!-- oapass/fcrepo:4.7.5-3.5-1 -->
+    <docker.fcrepo.version>oapass/fcrepo@sha256:20ef1c446bf0e4ef4e09847e83b0ed9e3a0f17953d54b8e0fadf94435d78b6a2
     </docker.fcrepo.version>
     <!-- oapass/indexer:0.0.18-3.4 -->
     <docker.indexer.version>oapass/indexer@sha256:e51092a9d433219d52207f1ec3f5ea7c652d51f516bcbe9434dae556b921546d
