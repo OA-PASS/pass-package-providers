@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+    <groupId>org.eclipse.pass.deposit.package.providers</groupId>
     <artifactId>package-providers</artifactId>
     <version>0.0.3-SNAPSHOT</version>
   </parent>
@@ -295,6 +295,12 @@
                         <volume>${project.build.testOutputDirectory}/hosts:/etc/hosts</volume>
                       </bind>
                     </volumes>
+                    <wait>
+                      <http>
+                        <url>http://${pass.elasticsearch.host}:${es.port}/pass/</url>
+                      </http>
+                      <time>120000</time>
+                    </wait>
                   </run>
                 </image>
               </images>
@@ -362,7 +368,7 @@
   <dependencies>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-assembler</artifactId>
       <version>${deposit-services.version}</version>
       <scope>test</scope>
@@ -371,7 +377,7 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-integration</artifactId>
       <version>${deposit-services.version}</version>
       <scope>test</scope>
@@ -380,21 +386,21 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-resources</artifactId>
       <version>${deposit-services.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
       <artifactId>jscholarship-package-provider</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
       <artifactId>jscholarship-package-provider</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
@@ -403,14 +409,14 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
       <artifactId>nihms-package-provider</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
       <artifactId>nihms-package-provider</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
@@ -419,14 +425,14 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
       <artifactId>bagit-package-provider</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit.package.providers</groupId>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
       <artifactId>bagit-package-provider</artifactId>
       <version>${project.parent.version}</version>
       <scope>test</scope>
@@ -435,40 +441,40 @@
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>fedora-builder</artifactId>
       <version>${deposit-services.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>deposit-util</artifactId>
       <version>${deposit-services.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass.deposit</groupId>
+      <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>deposit-messaging</artifactId>
       <version>${deposit-services.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass</groupId>
+      <groupId>org.eclipse.pass</groupId>
       <artifactId>pass-model</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass</groupId>
+      <groupId>org.eclipse.pass</groupId>
       <artifactId>pass-client-api</artifactId>
       <scope>test</scope>
     </dependency>
 
     <dependency>
-      <groupId>org.dataconservancy.pass</groupId>
+      <groupId>org.eclipse.pass</groupId>
       <artifactId>pass-data-client</artifactId>
       <scope>test</scope>
     </dependency>
