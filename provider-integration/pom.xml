@@ -22,7 +22,7 @@
   <parent>
     <groupId>org.eclipse.pass.deposit.package.providers</groupId>
     <artifactId>package-providers</artifactId>
-    <version>0.0.3-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>provider-integration</artifactId>
