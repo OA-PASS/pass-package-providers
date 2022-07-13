@@ -14,9 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -26,6 +24,7 @@
   </parent>
 
   <artifactId>provider-integration</artifactId>
+
   <name>Package Provider Integration Tests</name>
   <description>Integrates Package Providers with Deposit Services</description>
 
@@ -42,37 +41,159 @@
     <pass.elasticsearch.limit>100</pass.elasticsearch.limit>
   </properties>
 
-  <profiles>
-    <profile>
-      <id>external-fcrepo-server</id>
-      <activation>
-        <property>
-          <name>fcrepo.server</name>
-        </property>
-      </activation>
-      <properties>
-        <fcrepo.skip>true</fcrepo.skip>
-        <pass.fedora.baseurl>http://${fcrepo.server}:${fcrepo.http.port}/fcrepo/rest/</pass.fedora.baseurl>
-      </properties>
-    </profile>
-    <profile>
-      <id>standard</id>
-      <activation>
-        <property>
-          <name>standard</name>
-        </property>
-      </activation>
-      <properties>
-        <fcrepo.http.port>8080</fcrepo.http.port>
-        <fcrepo.jms.port>61616</fcrepo.jms.port>
-        <es.port>9200</es.port>
-      </properties>
-    </profile>
-  </profiles>
+  <dependencies>
 
+    <dependency>
+      <groupId>org.eclipse.pass.deposit</groupId>
+      <artifactId>shared-assembler</artifactId>
+      <version>${deposit-services.version}</version>
+      <type>test-jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit</groupId>
+      <artifactId>shared-integration</artifactId>
+      <version>${deposit-services.version}</version>
+      <type>test-jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit</groupId>
+      <artifactId>shared-resources</artifactId>
+      <version>${deposit-services.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
+      <artifactId>jscholarship-package-provider</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
+      <artifactId>jscholarship-package-provider</artifactId>
+      <version>${project.parent.version}</version>
+      <type>test-jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
+      <artifactId>nihms-package-provider</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
+      <artifactId>nihms-package-provider</artifactId>
+      <version>${project.parent.version}</version>
+      <type>test-jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
+      <artifactId>bagit-package-provider</artifactId>
+      <version>${project.parent.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
+      <artifactId>bagit-package-provider</artifactId>
+      <version>${project.parent.version}</version>
+      <type>test-jar</type>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit</groupId>
+      <artifactId>fedora-builder</artifactId>
+      <version>${deposit-services.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit</groupId>
+      <artifactId>deposit-util</artifactId>
+      <version>${deposit-services.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass.deposit</groupId>
+      <artifactId>deposit-messaging</artifactId>
+      <version>${deposit-services.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass</groupId>
+      <artifactId>pass-model</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass</groupId>
+      <artifactId>pass-client-api</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.eclipse.pass</groupId>
+      <artifactId>pass-data-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.github.lukehutch</groupId>
+      <artifactId>fast-classpath-scanner</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
 
   <build>
-
     <plugins>
 
       <plugin>
@@ -362,159 +483,33 @@
       </plugin>
 
     </plugins>
-
   </build>
 
-  <dependencies>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit</groupId>
-      <artifactId>shared-assembler</artifactId>
-      <version>${deposit-services.version}</version>
-      <scope>test</scope>
-      <type>test-jar</type>
-      <classifier>tests</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit</groupId>
-      <artifactId>shared-integration</artifactId>
-      <version>${deposit-services.version}</version>
-      <scope>test</scope>
-      <type>test-jar</type>
-      <classifier>tests</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit</groupId>
-      <artifactId>shared-resources</artifactId>
-      <version>${deposit-services.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
-      <artifactId>jscholarship-package-provider</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
-      <artifactId>jscholarship-package-provider</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-      <type>test-jar</type>
-      <classifier>tests</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
-      <artifactId>nihms-package-provider</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
-      <artifactId>nihms-package-provider</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-      <type>test-jar</type>
-      <classifier>tests</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
-      <artifactId>bagit-package-provider</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit.package.providers</groupId>
-      <artifactId>bagit-package-provider</artifactId>
-      <version>${project.parent.version}</version>
-      <scope>test</scope>
-      <type>test-jar</type>
-      <classifier>tests</classifier>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit</groupId>
-      <artifactId>fedora-builder</artifactId>
-      <version>${deposit-services.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit</groupId>
-      <artifactId>deposit-util</artifactId>
-      <version>${deposit-services.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass.deposit</groupId>
-      <artifactId>deposit-messaging</artifactId>
-      <version>${deposit-services.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass</groupId>
-      <artifactId>pass-model</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass</groupId>
-      <artifactId>pass-client-api</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.eclipse.pass</groupId>
-      <artifactId>pass-data-client</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>io.github.lukehutch</groupId>
-      <artifactId>fast-classpath-scanner</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-  </dependencies>
-
+  <profiles>
+    <profile>
+      <id>external-fcrepo-server</id>
+      <activation>
+        <property>
+          <name>fcrepo.server</name>
+        </property>
+      </activation>
+      <properties>
+        <fcrepo.skip>true</fcrepo.skip>
+        <pass.fedora.baseurl>http://${fcrepo.server}:${fcrepo.http.port}/fcrepo/rest/</pass.fedora.baseurl>
+      </properties>
+    </profile>
+    <profile>
+      <id>standard</id>
+      <activation>
+        <property>
+          <name>standard</name>
+        </property>
+      </activation>
+      <properties>
+        <fcrepo.http.port>8080</fcrepo.http.port>
+        <fcrepo.jms.port>61616</fcrepo.jms.port>
+        <es.port>9200</es.port>
+      </properties>
+    </profile>
+  </profiles>
 </project>

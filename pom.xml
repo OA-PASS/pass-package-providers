@@ -14,9 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -29,10 +27,10 @@
   <artifactId>package-providers</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
+
   <name>PASS Deposit Services Package Providers</name>
   <description>Responsible for the transfer of custody to downstream repositories</description>
   <url>https://github.com/OA-PASS/package-providers</url>
-
   <licenses>
     <license>
       <name>The Apache License, Version 2.0</name>
@@ -58,21 +56,12 @@
     <module>provider-integration</module>
   </modules>
 
-  <profiles>
-
-    <profile>
-      <id>external</id>
-      <activation>
-        <property>
-          <name>external</name>
-        </property>
-      </activation>
-      <properties>
-        <scp.port>122</scp.port>
-      </properties>
-    </profile>
-
-  </profiles>
+  <scm>
+    <connection>scm:git:https://github.com/OA-PASS/package-providers.git</connection>
+    <developerConnection>scm:git:https://github.com/OA-PASS/package-providers.git</developerConnection>
+    <url>https://github.com/OA-PASS/package-providers</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -147,56 +136,57 @@
 
   </properties>
 
+  <dependencyManagement>
+
+    <dependencies>
+
+      <dependency>
+        <groupId>org.eclipse.pass.deposit</groupId>
+        <artifactId>deposit-parent</artifactId>
+        <version>${deposit-services.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>io.github.joergreichert</groupId>
+        <artifactId>mets-api</artifactId>
+        <version>${mets-api.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+    </dependencies>
+
+  </dependencyManagement>
+
+  <repositories>
+
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+    <repository>
+      <id>spring-libs-snap</id>
+      <name>Spring Snapshots</name>
+      <url>https://repo.spring.io/snapshot</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+  </repositories>
+
   <build>
-
-    <plugins>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-failsafe-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>pl.project13.maven</groupId>
-        <artifactId>git-commit-id-plugin</artifactId>
-        <configuration>
-          <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-          <generateGitPropertiesFile>true</generateGitPropertiesFile>
-          <generateGitPropertiesFilename>${project.build.outputDirectory}/package-providers-git.properties
-          </generateGitPropertiesFilename>
-          <failOnNoGitDirectory>false</failOnNoGitDirectory>
-          <abbrevLength>8</abbrevLength>
-        </configuration>
-        <executions>
-          <execution>
-            <id>gitproperties</id>
-            <goals>
-              <goal>revision</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-    </plugins>
-
     <pluginManagement>
 
       <plugins>
@@ -324,64 +314,68 @@
       </plugins>
 
     </pluginManagement>
+    <plugins>
 
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>pl.project13.maven</groupId>
+        <artifactId>git-commit-id-plugin</artifactId>
+        <configuration>
+          <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+          <generateGitPropertiesFile>true</generateGitPropertiesFile>
+          <generateGitPropertiesFilename>${project.build.outputDirectory}/package-providers-git.properties
+          </generateGitPropertiesFilename>
+          <failOnNoGitDirectory>false</failOnNoGitDirectory>
+          <abbrevLength>8</abbrevLength>
+        </configuration>
+        <executions>
+          <execution>
+            <id>gitproperties</id>
+            <goals>
+              <goal>revision</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
   </build>
 
-  <dependencyManagement>
+  <profiles>
 
-    <dependencies>
+    <profile>
+      <id>external</id>
+      <activation>
+        <property>
+          <name>external</name>
+        </property>
+      </activation>
+      <properties>
+        <scp.port>122</scp.port>
+      </properties>
+    </profile>
 
-      <dependency>
-        <groupId>org.eclipse.pass.deposit</groupId>
-        <artifactId>deposit-parent</artifactId>
-        <version>${deposit-services.version}</version>
-        <scope>import</scope>
-        <type>pom</type>
-      </dependency>
-
-      <dependency>
-        <groupId>io.github.joergreichert</groupId>
-        <artifactId>mets-api</artifactId>
-        <version>${mets-api.version}</version>
-        <exclusions>
-          <exclusion>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-    </dependencies>
-
-  </dependencyManagement>
-
-  <repositories>
-
-    <repository>
-      <id>sonatype-nexus-snapshots</id>
-      <name>Sonatype Nexus Snapshots</name>
-      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-
-    <repository>
-      <id>spring-libs-snap</id>
-      <name>Spring Snapshots</name>
-      <url>https://repo.spring.io/snapshot</url>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-
-  </repositories>
-
-  <scm>
-    <connection>scm:git:https://github.com/OA-PASS/package-providers.git</connection>
-    <developerConnection>scm:git:https://github.com/OA-PASS/package-providers.git</developerConnection>
-    <url>https://github.com/OA-PASS/package-providers</url>
-    <tag>HEAD</tag>
-  </scm>
-
+  </profiles>
 </project>
