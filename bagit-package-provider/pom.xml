@@ -14,9 +14,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -26,46 +24,9 @@
   </parent>
 
   <artifactId>bagit-package-provider</artifactId>
+
   <name>BagIT Package Provider</name>
   <description>Creates packages according to the BagIT IETF standard</description>
-
-  <build>
-
-    <plugins>
-
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>docker-maven-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>build-after-its</id>
-            <phase>verify</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-            <configuration>
-              <images>
-                <image>
-                  <name>providers/bagit-package-provider</name>
-                  <build>
-                    <dockerFile>${project.basedir}/Dockerfile</dockerFile>
-                    <noCache>true</noCache>
-                  </build>
-                </image>
-              </images>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-      </plugin>
-
-    </plugins>
-
-  </build>
 
   <dependencies>
 
@@ -135,8 +96,7 @@
       <artifactId>pass-data-client</artifactId>
       <scope>runtime</scope>
       <exclusions>
-        <exclusion>
-          <!-- org.elasticsearch.client:elasticsearch-rest-high-level-client -->
+        <exclusion><!-- org.elasticsearch.client:elasticsearch-rest-high-level-client -->
           <groupId>org.elasticsearch.client</groupId>
           <artifactId>elasticsearch-rest-high-level-client</artifactId>
         </exclusion>
@@ -205,4 +165,39 @@
 
   </dependencies>
 
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>build-after-its</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>build</goal>
+            </goals>
+            <configuration>
+              <images>
+                <image>
+                  <name>providers/bagit-package-provider</name>
+                  <build>
+                    <dockerFile>${project.basedir}/Dockerfile</dockerFile>
+                    <noCache>true</noCache>
+                  </build>
+                </image>
+              </images>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+
+    </plugins>
+  </build>
 </project>
