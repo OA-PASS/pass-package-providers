@@ -105,7 +105,7 @@
     </docker.dspace.version>
     <docker.ftp.version>oapass/ftpserver:latest</docker.ftp.version>
     <docker.deposit-services-core.version>
-      oapass/deposit-services-core:1.1.0-SNAPSHOT
+      oapass/deposit-services-core:0.1.0
     </docker.deposit-services-core.version>
     <docker.assets.version>birkland/assets@sha256:60310d68c7ab910096f471bf6636b35487c52ab6db970fc280959f49eec0f465
     </docker.assets.version>
