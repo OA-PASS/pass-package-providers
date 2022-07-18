@@ -44,13 +44,13 @@
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>deposit-model</artifactId>
-      <version>${deposit-services.version}</version>
+      <version>${pass-deposit-services.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>assembler-api</artifactId>
-      <version>${deposit-services.version}</version>
+      <version>${pass-deposit-services.version}</version>
     </dependency>
 
     <dependency>
@@ -66,13 +66,13 @@
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-assembler</artifactId>
-      <version>${deposit-services.version}</version>
+      <version>${pass-deposit-services.version}</version>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-assembler</artifactId>
-      <version>${deposit-services.version}</version>
+      <version>${pass-deposit-services.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
@@ -100,14 +100,14 @@
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-resources</artifactId>
-      <version>${deposit-services.version}</version>
+      <version>${pass-deposit-services.version}</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>fedora-builder</artifactId>
-      <version>${deposit-services.version}</version>
+      <version>${pass-deposit-services.version}</version>
       <scope>test</scope>
     </dependency>
 

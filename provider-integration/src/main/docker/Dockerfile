@@ -14,7 +14,7 @@ LABEL package-providers-builddate=${git.build.time}
 LABEL package-providers-dirty=${git.dirty}
 
 LABEL depositservices-image-version=${docker.deposit-services-core.version}
-LABEL depositservices-java-version=${deposit-services.version}
+LABEL depositservices-java-version=${pass-deposit-services.version}
 
 COPY --from=J10P /provider-with-dependencies/* /app/BOOT-INF/lib/
 COPY --from=NIHMS /provider-with-dependencies/* /app/BOOT-INF/lib/
