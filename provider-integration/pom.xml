@@ -20,7 +20,7 @@
   <parent>
     <groupId>org.eclipse.pass.deposit.package.providers</groupId>
     <artifactId>package-providers</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
   </parent>
 
   <artifactId>provider-integration</artifactId>
@@ -46,7 +46,7 @@
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-assembler</artifactId>
-      <version>${pass-deposit-services.version}</version>
+      <version>0.1.0</version>
       <type>test-jar</type>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -55,7 +55,7 @@
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-integration</artifactId>
-      <version>${pass-deposit-services.version}</version>
+      <version>0.1.0</version>
       <type>test-jar</type>
       <classifier>tests</classifier>
       <scope>test</scope>
@@ -64,7 +64,7 @@
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>shared-resources</artifactId>
-      <version>${pass-deposit-services.version}</version>
+      <version>0.1.0</version>
       <scope>test</scope>
     </dependency>
 
@@ -119,21 +119,21 @@
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>fedora-builder</artifactId>
-      <version>${pass-deposit-services.version}</version>
+      <version>0.1.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>deposit-util</artifactId>
-      <version>${pass-deposit-services.version}</version>
+      <version>0.1.0</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.eclipse.pass.deposit</groupId>
       <artifactId>deposit-messaging</artifactId>
-      <version>${pass-deposit-services.version}</version>
+      <version>0.1.0</version>
       <scope>test</scope>
     </dependency>
 
