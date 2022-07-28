@@ -90,27 +90,11 @@
     <joda-time.version>2.10.1</joda-time.version>
     <handlebars.version>4.1.0</handlebars.version>
 
-    <!-- oapass/fcrepo:4.7.5-3.5-1 -->
-    <docker.fcrepo.version>oapass/fcrepo@sha256:20ef1c446bf0e4ef4e09847e83b0ed9e3a0f17953d54b8e0fadf94435d78b6a2
-    </docker.fcrepo.version>
-    <!-- oapass/indexer:0.0.18-3.4 -->
-    <docker.indexer.version>oapass/indexer@sha256:e51092a9d433219d52207f1ec3f5ea7c652d51f516bcbe9434dae556b921546d
-    </docker.indexer.version>
-    <docker.elasticsearch.version>docker.elastic.co/elasticsearch/elasticsearch-oss:6.2.3</docker.elasticsearch.version>
+    <!-- Core version of Deposit Services in use -->
+    <pass-deposit-services.version>0.1.0</pass-deposit-services.version>
 
-    <!-- TODO properly tag these images -->
-    <docker.postgres.version>oapass/postgres:latest</docker.postgres.version>
-    <docker.dspace.version>
-      oapass/dspace:20200409@sha256:99df12f10846f2a2d62058cf4eef631393d7949a343b233a9e487d54fd82a483
-    </docker.dspace.version>
-    <docker.ftp.version>oapass/ftpserver:latest</docker.ftp.version>
-    <docker.deposit-services-core.version>
-      oapass/deposit-services-core:0.1.0
-    </docker.deposit-services-core.version>
-    <docker.assets.version>birkland/assets@sha256:60310d68c7ab910096f471bf6636b35487c52ab6db970fc280959f49eec0f465
-    </docker.assets.version>
-
-    <pass.jsonld.context>https://oa-pass.github.io/pass-data-model/src/main/resources/context-3.5.jsonld
+    <pass.jsonld.context>
+      https://eclipse-pass.github.io/pass-data-model/src/main/resources/context-3.5.jsonld
     </pass.jsonld.context>
 
   </properties>

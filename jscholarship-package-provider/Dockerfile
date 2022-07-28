@@ -6,7 +6,7 @@
 #
 # See provider-integration/src/main/docker/Dockerfile
 #
-FROM ${docker.deposit-services-core.version}
+FROM ${docker.image.deposit-services-core.name}
 RUN mkdir /provider-with-dependencies
 ADD target/jscholarship-package-provider-${project.version}.jar /provider-with-dependencies
 ADD target/dependencies/ /provider-with-dependencies
