@@ -331,7 +331,7 @@
                 <image>
                   <!-- Fedora and ES must be exposed to the IT runtime, but the indexer is not -->
                   <alias>fcrepo</alias>
-                  <name>${docker.fcrepo.version}</name>
+                  <name>${it.image.fcrepo.name}</name>
                   <run>
                     <skip>${fcrepo.skip}</skip>
                     <wait>
@@ -364,7 +364,7 @@
                 </image>
                 <image>
                   <alias>elasticsearch</alias>
-                  <name>${docker.elasticsearch.version}</name>
+                  <name>${it.image.elasticsearch.name}</name>
                   <run>
                     <skip>${indexer.skip}</skip>
                     <wait>
@@ -389,7 +389,7 @@
                 </image>
                 <image>
                   <alias>indexer</alias>
-                  <name>${docker.indexer.version}</name>
+                  <name>${it.image.indexer.name}</name>
                   <run>
                     <skip>${indexer.skip}</skip>
                     <env>
@@ -402,7 +402,7 @@
                       <PI_FEDORA_JMS_QUEUE>fedora</PI_FEDORA_JMS_QUEUE>
                       <PI_TYPE_PREFIX>http://oapass.org/ns/pass#</PI_TYPE_PREFIX>
                       <PI_LOG_LEVEL>DEBUG</PI_LOG_LEVEL>
-                      <PI_ES_CONFIG>/app/esconfig-3.4.json</PI_ES_CONFIG>
+                      <PI_ES_CONFIG>/app/esconfig-3.5.json</PI_ES_CONFIG>
                     </env>
                     <network>
                       <name>its</name>
